@@ -1,11 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exame_Clínico</title>
+    <title>Exame Clínico</title>
 </head>
 <body>
-    
+    <h2>EXAME CLÍNICO</h2>
+<form>
+     <fieldset>
+        <legend>11.Inspeção do colo*</legend>
+
+        <label>
+            <input type="radio" name="inspecao" value="normal" required>
+            Normal
+            <br>
+        </label>
+
+        <label>
+            <input type="radio" name="inspecao" value="ausente">
+            Ausente (anomalias congênitas ou retirado cirurgicamente)
+            <br>
+        </label>
+
+        <label>
+            <input type="radio" name= "inspecao" value="alterado">
+            Alterado
+            <br>
+        </label>
+
+        <label>
+            <input type="radio" name="inspecao" value="nao_visualizado">
+            Colo não visualizado
+            <br>
+        </label>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>12.Sinais sugestivos de doenças sexualmente transmissíveis?</legend>
+        <label>
+            <input type="radio" name="dst" value="sim">
+            Sim
+        </label>
+
+        <label>
+            <input type="radio" name="dst" value="nao">
+            Não
+        </label>
+    </fieldset>
+
+    <fieldset>
+        <label for="data_coleta">Data da coleta*</label>
+        <input type="date" id="data_coleta" name="data_coleta" required>
+
+    </fieldset>
+
+    <fieldset>
+        <label for="responsavel">Responsável*</label>
+        <input type="text" id="responsavel" name="responsavel" required>
+
+    </fieldset>
+    <button type="submit">Enviar</button>
+
+</form>
+
 </body>
 </html>
