@@ -1,11 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recuperar Senha</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      padding-top: 60px;
+    }
+    .main-container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+  </style>
 </head>
 <body>
-    
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+    </div>
+  </div>
+</nav>
+<div class="container">
+  <div class="main-container">
+
+    <h2>Recuperar Senha</h2>
+    <form>
+      <div class="form-group">
+        <label for="email">Digite seu e-mail</label>
+        <input type="email" class="form-control" id="email" required>
+      </div>
+      <button type="submit" class="btn btn-warning btn-block">Enviar link de recuperação</button>
+    </form>
+    <hr>
+    <p class="text-center"><a href="login.html">← Voltar ao login</a></p>
+
+  </div>
+</div>
 </body>
 </html>
