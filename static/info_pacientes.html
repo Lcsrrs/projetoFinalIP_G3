@@ -1,11 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <title>Cadastro de pacientes</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link href="index.css" rel="stylesheet">
+  <link href="info_pacientes.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    
+    <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>                        
+        </button>
+        <a class="navbar-brand" href="#">Placeholder</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+            <li><a href="#">Início</a></li>
+            <li><a href="#">Pacientes</a></li>
+            <li><a href="#">Exames</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span>Sair</a></li>
+        </ul>
+        </div>
+    </div>
+    </nav>
+
+    <main>
+        <h3 class="pageTitle">Cadastrar paciente</h3>
+        <form>
+            <div class="form-group">
+                <label for="CartaoSUS">Cartão SUS*</label>
+                <input type="text" class="form-control" id="CartaoSUS" aria-describedby="CartaoSUS" placeholder="Insira o número do cartão SUS" required>
+            </div>
+            <div class="form-group">
+                <label>Nome Completo da Mulher*</label>
+                <input type="text" class="form-control" placeholder="Nome Completo da Mulher" required>
+            </div>
+            <div class="form-group">
+                <label>Nome Completo da Mãe*</label>
+                <input type="text" class="form-control" placeholder="Nome Completo da Mãe" required>
+            </div>
+            <div class="form-group">
+                <label>Apelido da Mulher </label>
+                <input type="text" class="form-control" placeholder="Apelido da Mulher">
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <label>CPF*</label>
+                    <input type="text" class="form-control" placeholder="123.456.789-13" required>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Nacionalidade</label>
+                    <input type="text" class="form-control" placeholder="Nacionalidade">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label>Data de Nascimento*</label>
+                    <input type="date" class="form-control" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Idade</label>
+                <input type="text" class="form-control" placeholder="Idade">
+            </div>
+            <div class="form-group">
+                <label>Raça/Cor</label>
+                <select class="form-control">
+                <option selected disabled type="hidden">Selecionar</option>
+                <option>Branca</option>
+                <option>Preta</option>
+                <option>Parda</option>
+                <option>Amarela</option>
+                <option>Indígena</option>
+                <option value="Etnia">Etnia</option>
+                </select>
+                <input type="text" class="form-control outro-input" placeholder="Por favor, especifique">
+            </div>
+            <h4>Dados Residenciais</h4>
+            <div class="form-group">
+                <label>Logradouro</label>
+                <input type="text" class="form-control" placeholder="Logradouro">
+            </div>
+            <div class="form-group">
+                <label>Complemento</label>
+                <input type="text" class="form-control" placeholder="Complemento">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label>Município</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="form-group col-md-4">
+                    <label>UF</label>
+                    <select id="inputState" class="form-control">
+                        <option selected>Escolha</option>
+                        <option>...</option>
+                    </select>
+                 </div>
+                <div class="form-group col-md-2">
+                    <label>CEP</label>
+                    <input type="text" class="form-control" id="inputZip">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Número</label>
+                <input type="text" class="form-control" placeholder="Número">
+            </div>
+            <div class="form-group">
+                <label>Bairro</label>
+                <input type="text" class="form-control" placeholder="Bairro">
+            </div>
+            <div class="form-group">
+                <label>UF</label>
+                <input type="text" class="form-control" placeholder="UF">
+            </div>
+            <div class="form-group">
+                <label>Código do Município</label>
+                <input type="text" class="form-control" placeholder="Código do Município">
+            </div>
+            <div class="form-group">
+                <label>DDD</label>
+                <input type="text" class="form-control" placeholder="DDD">
+            </div>
+            <div class="form-group">
+                <label>Telefone</label>
+                <input type="text" class="form-control" placeholder="Telefone">
+            </div>
+            <div class="form-group">
+                <label>Ponto de Referência</label>
+                <input type="text" class="form-control" placeholder="Ponto de Referência">
+            </div>
+            <div class="form-group">
+                <label>Escolaridade</label>
+                <select class="form-control">
+                <option selected disabled type="hidden">Selecionar</option>
+                <option>Analfabeta</option>
+                <option>Ensino Fundamental Incompleto</option>
+                <option>Ensino Fundamental Completo</option>
+                <option>Ensimo Médio Completo</option>
+                <option>Ensino Superior Completo</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </form>
+    </main>
 </body>
 </html>

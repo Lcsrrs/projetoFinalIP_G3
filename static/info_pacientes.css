@@ -1,0 +1,8 @@
+    .form-group:has(select option:checked[value="Etnia"]) .outro-input {
+      display: block;
+    }
+
+    .outro-input {
+      display: none;
+      margin-top: 10px;
+    }
