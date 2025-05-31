@@ -9,28 +9,27 @@
 
     <h1> DADOS DA ANAMNESE </h1>
     <hr>
-    <!--<form action="#" method="post"> Quando for enviar o php-->
-        <h3> 1. Motivo do Exame </h3>
+    <form action="#" method="post"> <h3> 1. Motivo do Exame </h3>
 
         <div>
-            <input type="radio" name="1-motivo" id="rastreamento" value="Rastreamento" required>
+            <input type="radio" name="1-motivo" id="rastreamento" value="Rastreamento" required class="input-radio motivo-exame-opcao">
             <label for="rastreamento">Rastreamento</label>
         </div>
 
         <div>
-            <input type="radio" name="1-motivo" id="repeticao" value="Repetição (exame alterado ASCUS/Baixo grau)" required>
+            <input type="radio" name="1-motivo" id="repeticao" value="Repetição (exame alterado ASCUS/Baixo grau)" required class="input-radio motivo-exame-opcao">
             <label for="repeticao">Repetição (exame alterado ASCUS/Baixo grau) </label>
         </div>
 
         <div>
-            <input type="radio" name="1-motivo" id="seguimento" value="Seguimento (pós diagnóstico colposcópico / tratamento)" required>
+            <input type="radio" name="1-motivo" id="seguimento" value="Seguimento (pós diagnóstico colposcópico / tratamento)" required class="input-radio motivo-exame-opcao">
             <label for="seguimento">Seguimento (pós diagnóstico colposcópico / tratamento) </label>
         </div>
 
         <h3> 2. Fez o exame preventivo (Papanicolau) alguma vez ? </h3>
 
         <div>
-            <input type="radio" name="2-exameprev" id="sim" value="Sim" >
+            <input type="radio" name="2-exameprev" id="sim" value="Sim" class="input-radio exame-preventivo-opcao">
             <label for="sim"> Sim. Quando fez o último exame ?</label>
         </div>
 
@@ -42,112 +41,113 @@
                pattern="\d{4}"
                maxlength="4"
                placeholder="AAAA"
-               required>
+               required
+               class="input-text ano-ultimo-exame">
         <br>
 
         <div>
-            <input type="radio" name="2-exameprev" id="nao2" value="Não" required>
+            <input type="radio" name="2-exameprev" id="nao2" value="Não" required class="input-radio exame-preventivo-opcao">
             <label for="nao2"> Não </label>
         </div>
 
         <div>
-            <input type="radio" name="2-exameprev" id="naosabe2" value="Não sabe" required>
+            <input type="radio" name="2-exameprev" id="naosabe2" value="Não sabe" required class="input-radio exame-preventivo-opcao">
             <label for="naosabe2"> Não sabe</label>
         </div>
 
         <h3> 3. Usa DIU? </h3>
 
         <div>
-            <input type="radio" name="3-DIU" id="sim3" value="Sim" required>
+            <input type="radio" name="3-DIU" id="sim3" value="Sim" required class="input-radio diu-opcao">
             <label for="sim3"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="3-DIU" id="nao3" value="Não" required>
+            <input type="radio" name="3-DIU" id="nao3" value="Não" required class="input-radio diu-opcao">
             <label for="nao3"> Não </label>
         </div>
 
         <div>
-            <input type="radio" name="3-DIU" id="naosabe3" value="Não sabe" required>
+            <input type="radio" name="3-DIU" id="naosabe3" value="Não sabe" required class="input-radio diu-opcao">
             <label for="naosabe3"> Não sabe</label>
         </div>
 
         <h3> 4. Está grávida ? </h3>
 
         <div>
-            <input type="radio" name="4-gravida" id="sim4" value="Sim" required>
+            <input type="radio" name="4-gravida" id="sim4" value="Sim" required class="input-radio gravida-opcao">
             <label for="sim4"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="4-gravida" id="nao4" value="Não" required>
+            <input type="radio" name="4-gravida" id="nao4" value="Não" required class="input-radio gravida-opcao">
             <label for="nao4"> Não </label>
         </div>
 
         <div>
-            <input type="radio" name="4-gravida" id="naosabe4" value="Não sabe" required>
+            <input type="radio" name="4-gravida" id="naosabe4" value="Não sabe" required class="input-radio gravida-opcao">
             <label for="naosabe4"> Não sabe</label>
         </div>
 
         <h3> 5. Usa pílula anticoncepcional ? </h3>
 
         <div>
-            <input type="radio" name="5-pilula" id="sim5" value="Sim" required>
+            <input type="radio" name="5-pilula" id="sim5" value="Sim" required class="input-radio pilula-opcao">
             <label for="sim5"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="5-pilula" id="nao5" value="Não" required>
+            <input type="radio" name="5-pilula" id="nao5" value="Não" required class="input-radio pilula-opcao">
             <label for="nao5"> Não </label>
         </div>
 
         <div>
-            <input type="radio" name="5-pilula" id="naosabe5" value="Não sabe" required>
+            <input type="radio" name="5-pilula" id="naosabe5" value="Não sabe" required class="input-radio pilula-opcao">
             <label for="naosabe5"> Não sabe</label>
         </div>
 
         <h3> 6. Usa hormônio / remédio para tratar a menopausa ? </h3>
 
         <div>
-            <input type="radio" name="6-hormonio" id="sim6" value="sim" required>
+            <input type="radio" name="6-hormonio" id="sim6" value="sim" required class="input-radio hormonio-menopausa-opcao">
             <label for="sim6"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="6-hormonio" id="nao6" value="não" required>
+            <input type="radio" name="6-hormonio" id="nao6" value="não" required class="input-radio hormonio-menopausa-opcao">
             <label for="nao6"> Não </label>
         </div>
 
         <div>
-            <input type="radio" name="6-hormonio" id="naosabe6" value="Não sabe" required>
+            <input type="radio" name="6-hormonio" id="naosabe6" value="Não sabe" required class="input-radio hormonio-menopausa-opcao">
             <label for="naosabe6"> Não sabe</label>
         </div>
 
         <h3> 7. Já fez tratamento por radioterapia ? </h3>
 
         <div>
-            <input type="radio" name="7-radio" id="sim7" value="sim" required>
+            <input type="radio" name="7-radio" id="sim7" value="sim" required class="input-radio radioterapia-opcao">
             <label for="sim7"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="7-radio" id="nao7" value="não" required>
+            <input type="radio" name="7-radio" id="nao7" value="não" required class="input-radio radioterapia-opcao">
             <label for="nao7"> Não </label>
         </div>
 
         <div>
-            <input type="radio" name="7-radio" id="naosabe7" value="Não sabe" required>
+            <input type="radio" name="7-radio" id="naosabe7" value="Não sabe" required class="input-radio radioterapia-opcao">
             <label for="naosabe7"> Não sabe</label>
         </div>
 
         <h3> 8. Data da última menstruação/regra: </h3>
 
         <label for="dataNascimento">Data:</label>
-        <input type="date" id="dataNascimento" name="dataNascimento" required>
+        <input type="date" id="dataNascimento" name="dataNascimento" required class="input-date data-ultima-menstruacao">
         <br> <br>
 
         <div>
-            <input type="radio" name="8-menstruacao" id="naosabe8" value="Não sabe/Não lembra" required>
+            <input type="radio" name="8-menstruacao" id="naosabe8" value="Não sabe/Não lembra" required class="input-radio ultima-menstruacao-status">
             <label for="naosabe8"> Não sabe/Não lembra</label>
         </div>
 
@@ -155,12 +155,12 @@
         <h4>(não considerar a primeira relação sexual na vida)</h4>
 
         <div>
-            <input type="radio" name="9-sangramentorel" id="sim9" value="Sim" required>
+            <input type="radio" name="9-sangramentorel" id="sim9" value="Sim" required class="input-radio sangramento-relacoes-opcao">
             <label for="sim9"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="9-sangramentorel" id="naosabe9" value="Não / Não sabe / Não lembra" required>
+            <input type="radio" name="9-sangramentorel" id="naosabe9" value="Não / Não sabe / Não lembra" required class="input-radio sangramento-relacoes-opcao">
             <label for="naosabe9"> Não / Não sabe / Não lembra</label>
         </div>
 
@@ -168,18 +168,18 @@
         <h4>(não considerar o(s) sangramentos(s) na vigência de reposição hormonal)</h4>
 
         <div>
-            <input type="radio" name="10-sangramentomen" id="sim10" value="Sim" required>
+            <input type="radio" name="10-sangramentomen" id="sim10" value="Sim" required class="input-radio sangramento-menopausa-opcao">
             <label for="sim10"> Sim </label>
         </div>
 
         <div>
-            <input type="radio" name="10-sangramentomen" id="naosabe10" value="Não / Não sabe / Não lembra / Não está na menopausa" required>
+            <input type="radio" name="10-sangramentomen" id="naosabe10" value="Não / Não sabe / Não lembra / Não está na menopausa" required class="input-radio sangramento-menopausa-opcao">
             <label for="naosabe10"> Não / Não sabe / Não lembra / Não está na menopausa</label>
         </div>
 
         <br>
-        <input type="submit" value="Salvar Dados">
-        <input type="reset" value="Limpar Formulário">
+        <input type="submit" value="Salvar Dados" class="btn btn-salvar">
+        <input type="reset" value="Limpar Formulário" class="btn btn-limpar">
     </form>
     <br>
     <br>
