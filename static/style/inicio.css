@@ -1,0 +1,21 @@
+.homeCards{
+    max-width: 90vw;
+    padding-left: 10vw;
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+.card-img-top{
+    padding-top: 10px;
+}
+
+.cardLink {
+    text-decoration: none;
+}
+
+.card:hover {
+    background-color: rgb(109, 194, 250);
+    color: white;
+    transition: background-color 0.2s ease;
+}

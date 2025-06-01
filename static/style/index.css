@@ -1,5 +1,11 @@
+body {
+    position: relative;
+    min-height: 100vh;
+}
+
 main {
     padding: 25px;
+    padding-bottom: 8rem;
 }
 
 .navbar-custom {
@@ -83,6 +89,14 @@ main {
     font-weight: bold;
 }
 
+.pageSecondary {
+    padding-bottom: 20px;
+    text-align: left;
+    margin-top: 20px;
+    color: #0F3A39;
+    font-weight: lighter;
+}
+
 body{
     background-color: #EFFFF8;
     font-family: Arial, sans-serif;
@@ -152,11 +166,14 @@ button:hover{
 }
 .rodape{
     background-color: rgb(4, 78, 41) ;
-    padding: 10px 20px;
+    height: 8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-top: 20px solid #EFFFF8;
+    width: 100%;
+    bottom: 0%;
+    position: absolute;
 }
 .icone-rodape{
     height: 100px;

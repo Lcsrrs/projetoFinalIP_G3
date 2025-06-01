@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
     <link href="./style/index.css" rel="stylesheet">
+    <link href="./style/inicio.css" rel="stylesheet">
     <link href="./style/cadastro_pacientes.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </head>
@@ -15,12 +16,14 @@
             <div class="menu-links">
                 <a href="./index.html">Inicio</a>
                 <a href="./cadastro_pacientes.html">Cadastro Paciente</a>
-                <a href="./anamnese.html">Anamnese</a>
+                <a href="./anamnese1.html">Anamnese</a>
                 <a href="./exame_clinico.html">Exame Clínico</a>
             </div>
-            <div class="logo-centro">
-                <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" alt="Logo">
-            </div>
+            <a href="index.html">
+                <div class="logo-centro">
+                    <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" alt="Logo">
+                </div>
+            </a>
         </div>
         <div class="menu-direito">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-bell" viewBox="0 0 16 16">
@@ -37,9 +40,66 @@
         </div>
     </nav>
     <main>
-        
+        <h2 class="pageTitle">Bem-Vindo, %s</h2>
+        <div class="row row-cols-1 row-cols-md-3 g-4 homeCards">
+            <div class="col">
+                <a href="#" class="cardLink">
+                    <div class="card h-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-search card-img-top" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+                    </svg>
+                    <div class="card-body">
+                        <h5 class="card-title">Consulta Pacientes (Em construção)</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus facere voluptates, corporis fugit ullam a error est! Porro doloribus itaque accusantium, nam, adipisci, soluta at hic sit minima harum ipsum..</p>
+                    </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="./cadastro_pacientes.html" class="cardLink">
+                    <div class="card h-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-plus-fill card-img-top" viewBox="0 0 16 16">
+                        <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                        <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5"/>
+                    </svg>
+                    <div class="card-body">
+                        <h5 class="card-title">Cadastro de Paciente</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus facere voluptates, corporis fugit ullam a error est! Porro doloribus itaque accusantium, nam, adipisci, soluta at hic sit minima harum ipsum..</p>
+                    </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="./anamnese1.html" class="cardLink">
+                    <div class="card h-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-clipboard-plus-fill card-img-top" viewBox="0 0 16 16">
+                        <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
+                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5zm4.5 6V9H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V10H6a.5.5 0 0 1 0-1h1.5V7.5a.5.5 0 0 1 1 0"/>
+                    </svg>
+                    <div class="card-body">
+                        <h5 class="card-title">Registro de nova Anamnese</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Expedita, officia similique beatae tempora ratione sunt laudantium dignissimos exercitationem aspernatur perferendis non nesciunt, corporis molestias? Deleniti cumque asperiores excepturi provident reprehenderit.</p>
+                    </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="./exame_clinico.html" class="cardLink">
+                    <div class="card h-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-clipboard2-plus-fill card-img-top" viewBox="0 0 16 16">
+                        <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5"/>
+                        <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5M8.5 6.5V8H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V9H6a.5.5 0 0 1 0-1h1.5V6.5a.5.5 0 0 1 1 0"/>
+                    </svg>
+                    <div class="card-body">
+                        <h5 class="card-title">Registrar Resultado de Exame</h5>
+                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Necessitatibus facere voluptates, corporis fugit ullam a error est! Porro doloribus itaque accusantium, nam, adipisci, soluta at hic sit minima harum ipsum..</p>
+                    </div>
+                    </div>
+                </a>
+            </div>
+        </div>
     </main>
-        <footer class="rodape">
+    <footer class="rodape">
         <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" alt="Ícone" class="icone-rodape">
     </footer>
 </body>

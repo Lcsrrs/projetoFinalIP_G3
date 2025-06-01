@@ -1,0 +1,76 @@
+h4 {
+  padding: 25px 0;
+}
+
+.card {
+    margin: 30px auto;
+    padding: 30px 7% 30px;
+    background-color: white;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-size: medium;
+}
+
+.resultSearchImage {
+    margin: 10px;
+}
+
+.cardContent {
+    display: flex;
+    justify-self: left;
+}
+
+tr:nth-child(even) {
+  background-color: #D6EEEE;
+}
+
+tr:hover {background-color: #D6EEEE;}
+
+a.mainButton {
+    color: white;
+    background-color: #007977;
+    text-decoration: none;
+    text-align: center;
+    padding: 13px;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+a.secondaryButton {
+    color: black;
+    background-color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 13px;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+a.mainButton:hover{
+    background-color: rgb(67, 194, 109);
+}
+
+a.secondaryButton:hover{
+    background-color: rgb(67, 194, 109);
+}
+
+h5 {
+    color: rgb(4, 78, 41);
+    font-weight: bold;
+}
+
+.question {
+    padding: 10px;
+}
+
+.form-c:has(select input:checked[value="Sim"]) .outro-input {
+  display: block;
+}
