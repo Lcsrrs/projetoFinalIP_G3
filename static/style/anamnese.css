@@ -82,3 +82,27 @@ h5 {
             font-size: 0.9em;
             box-sizing: border-box;
 }
+
+.title-style-3 {
+            font-size: 1.6em;
+            color: #2c3e50; 
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            position: relative; 
+            display: inline-flex; 
+            align-items: center;
+        }
+.title-style-3 i { 
+            margin-right: 10px;
+            color: #3498db; 
+        }
+.title-style-3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 70%; 
+            height: 3px; 
+            background: linear-gradient(to right, #3498db, #2ecc71); 
+            border-radius: 2px;
+        }
