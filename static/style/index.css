@@ -1,0 +1,166 @@
+main {
+    padding: 25px;
+}
+
+.navbar-custom {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    border-bottom: 1px solid #0a7269;
+    padding: 0;
+    height: 80px;
+}
+
+.navBar{
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu-esquerdo {
+    width: 50%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.menu-links{
+    display: flex;
+    align-items: center;
+}
+
+.menu-links a {
+    margin: 0 20px;
+    padding: 15px;
+    color: #000;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.menu-links a:hover {
+    text-decoration: none;
+    background-color: #0a7269;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.logo-centro img {
+    height: 60px;
+}
+
+.menu-direito {
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-right: 20px;
+    font-size: 1.5rem;
+    color: #0a7269;
+}
+
+.menu-direito {
+    padding: 30px;
+    border-radius: 100%;
+}
+.menu-direito svg:hover {
+    background-color: rgb(202, 202, 202);
+    cursor: pointer;
+}
+
+@media (max-width: 1620px) {
+    .menu-links {
+    display: none;
+    }
+}
+
+.pageTitle {
+    padding-bottom: 20px;
+    text-align: center;
+    margin-top: 20px;
+    color: #0F3A39;
+    font-weight: bold;
+}
+
+body{
+    background-color: #EFFFF8;
+    font-family: Arial, sans-serif;
+}
+
+form{
+    width: 90%;
+    margin: 30px auto;
+    padding: 30px 7% 30px;
+    background-color: white;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-size: medium;
+}
+.form-group{
+    margin-bottom: 15px;
+   
+}
+label{
+    color: rgb(4, 78, 41);
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.linha-horizontal{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.linha-horizontal2{
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+input, select{
+    width: 100%;
+    padding: 4px;
+    border: 1px solid rgb(4, 78, 41);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.buttons{
+    text-align: center;
+    margin-top: 10px;
+}
+button{
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.buttonSecundary {
+    background-color: white;
+}
+
+.buttonPrimary {
+    color: white;
+    background-color: #007977;
+}
+
+button:hover{
+    background-color: rgb(67, 194, 109);
+}
+.rodape{
+    background-color: rgb(4, 78, 41) ;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 20px solid #EFFFF8;
+}
+.icone-rodape{
+    height: 100px;
+    display: block;
+    margin: auto;
+    width: auto;
+}
