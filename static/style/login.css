@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+body {
+  background: #f5f9fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.card {
+  margin: 30px auto;
+  padding: 30px 7% 30px;
+  background-color: white;
+  border-radius: 40px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.logo {
+  max-width: 250px;
+  margin-bottom: 20px;
+}
+
+h4 {
+  padding: 25px 0;
+  color: #007977;
+  font-size: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 25px;
+  text-align: left;
+  position: relative;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  border-color: #007977;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 121, 119, 0.2);
+}
+
+.error-message {
+  color: #ff4444;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  display: none;
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+}
+
+input:invalid:not(:placeholder-shown) + .error-message {
+  display: block;
+}
+
+input:invalid:not(:placeholder-shown) {
+  border-color: #ff4444;
+}
+
+.mainButton {
+  color: white;
+  background-color: #007977;
+  text-decoration: none;
+  text-align: center;
+  padding: 13px;
+  margin: 15px 0;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: block;
+  width: 100%;
+}
+
+.secondaryButton {
+  color: black;
+  background-color: white;
+  text-decoration: none;
+  text-align: center;
+  padding: 13px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+  width: 100%;
+}
+
+.mainButton:hover {
+  background-color: rgb(67, 194, 109);
+}
+
+.secondaryButton:hover {
+  background-color: rgb(67, 194, 109);
+  color: white;
+  border-color: transparent;
+}
+
+.links {
+  margin: 25px 0;
+}
+
+footer {
+  margin-top: 30px;
+  color: #777;
+  font-size: 0.8rem;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
