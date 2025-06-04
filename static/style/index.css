@@ -75,7 +75,7 @@ main {
     cursor: pointer;
 }
 
-@media (max-width: 1620px) {
+@media (max-width: 1400px) {
     .menu-links {
     display: none;
     }
