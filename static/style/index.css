@@ -25,7 +25,7 @@ main {
 }
 
 .menu-esquerdo {
-    width: 50%;
+    width: 55%;
     display: flex;
     justify-content: space-between;
 }
@@ -53,11 +53,12 @@ main {
 
 .logo-centro img {
     height: 60px;
+    
 
 }
 
 .menu-direito {
-    width: 50%;
+    width: 45%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
