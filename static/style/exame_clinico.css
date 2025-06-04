@@ -49,6 +49,10 @@ form {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+.radio-group {
+    padding: 25px;
+}
+
 .radio-group label {
     display: inline-flex;
     align-items: center;
@@ -61,4 +65,9 @@ form {
 .radio-group input[type="radio"] {
     margin-right: 6px;
     transform: scale(1.2);
+}
+
+.question11 {
+    display: flex;
+    flex-wrap: wrap;
 }
