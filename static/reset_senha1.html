@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redefinir Senha - Passo 1/4</title>
+  <title>Redefinir Senha - Passo 2/4</title>
   <link rel="stylesheet" href="./style/reset_senha.css">
 </head>
 <body>
@@ -12,17 +12,18 @@
          alt="Logo SUS Digital" 
          class="logo">
     
-    <div class="steps">Passo 1 de 4</div>
-    <h2>Redefinir Senha</h2>
-    <p>Digite o e-mail associado à sua conta para receber o código de verificação</p>
+    <div class="steps">Passo 2 de 4</div>
+    <h2>Verifique seu e-mail</h2>
+    <p>Enviamos um código de 6 dígitos para seu e-mail. Digite-o abaixo:</p>
     
-    <form action="reset_senha1.html">
+    <form action="reset_senha2.html">
       <div class="input-group">
-        <label for="email">E-mail</label>
-        <input type="email" id="email" placeholder="seu@email.com" required>
+        <label for="codigo">Código de Verificação</label>
+        <input type="text" id="codigo" placeholder="123456" required maxlength="6">
       </div>
       
-      <button type="submit" class="mainButton">Gerar Código</button>
+      <button type="submit" class="mainButton">Verificar Código</button>
+      <a href="reset_senha.html" class="secondaryButton">Reenviar Código</a>
     </form>
     
     <footer>

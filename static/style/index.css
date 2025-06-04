@@ -53,6 +53,8 @@ main {
 
 .logo-centro img {
     height: 60px;
+    
+
 }
 
 .menu-direito {
@@ -75,7 +77,7 @@ main {
     cursor: pointer;
 }
 
-@media (max-width: 1620px) {
+@media (max-width: 1400px) {
     .menu-links {
     display: none;
     }
@@ -165,7 +167,7 @@ button:hover{
     background-color: rgb(67, 194, 109);
 }
 .rodape{
-    background-color: rgb(4, 78, 41) ;
+    background-color: rgb(201, 239, 220) ;
     height: 8rem;
     display: flex;
     justify-content: space-between;
