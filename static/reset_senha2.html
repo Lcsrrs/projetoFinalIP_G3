@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir Senha - Passo 3/4</title>
+  <link rel="stylesheet" href="./style/reset_senha.css">
+</head>
+<body>
+  <div class="card">
+    <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" 
+         alt="Logo SUS Digital" 
+         class="logo">
+    
+    <div class="steps">Passo 3 de 4</div>
+    <h2>Crie uma nova senha</h2>
+    <p>Sua nova senha deve ter pelo menos 8 caracteres</p>
+    
+    <form action="reset_senha3.html" method="get" onsubmit="return document.getElementById('novaSenha').value === document.getElementById('confirmarSenha').value">
+      <div class="input-group">
+        <label for="novaSenha">Nova Senha</label>
+        <input type="password" id="novaSenha" name="novaSenha" 
+               placeholder="Digite sua nova senha" 
+               required minlength="8"
+               pattern=".{8,}"
+               title="A senha deve ter no mínimo 8 caracteres">
+      </div>
+      
+      <div class="input-group">
+        <label for="confirmarSenha">Confirmar Nova Senha</label>
+        <input type="password" id="confirmarSenha" name="confirmarSenha"
+               placeholder="Digite novamente sua senha" 
+               required minlength="8"
+               pattern=".{8,}"
+               title="A senha deve ter no mínimo 8 caracteres">
+      </div>
+      
+      <button type="submit" class="mainButton">Redefinir Senha</button>
+    </form>
+    
+    <footer>
+      SUS Digital © 2025
+    </footer>
+  </div>
+</body>
+</html>
