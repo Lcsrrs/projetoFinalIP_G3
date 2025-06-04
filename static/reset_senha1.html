@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redefinir Senha - Passo 2/4</title>
+  <link rel="stylesheet" href="./style/reset_senha.css">
+</head>
+<body>
+  <div class="card">
+    <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" 
+         alt="Logo SUS Digital" 
+         class="logo">
+    
+    <div class="steps">Passo 2 de 4</div>
+    <h2>Verifique seu e-mail</h2>
+    <p>Enviamos um código de 6 dígitos para seu e-mail. Digite-o abaixo:</p>
+    
+    <form action="reset_senha2.html">
+      <div class="input-group">
+        <label for="codigo">Código de Verificação</label>
+        <input type="text" id="codigo" placeholder="123456" required maxlength="6">
+      </div>
+      
+      <button type="submit" class="mainButton">Verificar Código</button>
+      <a href="reset_senha.html" class="secondaryButton">Reenviar Código</a>
+    </form>
+    
+    <footer>
+      SUS Digital © 2025
+    </footer>
+  </div>
+</body>
+</html>
