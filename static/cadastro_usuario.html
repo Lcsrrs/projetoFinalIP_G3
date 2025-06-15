@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar Usuário</title>
+  <link rel="stylesheet" href="./style/login.css">
+</head>
+
+<body>
+  <div class="card">
+    <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" 
+         alt="Logo SUS Digital" 
+         class="logo">
+    
+    <h4>Cadastrar Usuário</h4>
+    
+    <form action="index.html" method="get">
+      <div class="input-group">
+        <label for="CPF">CPF</label>
+        <input type="text" id="CPF" name="CPF" placeholder="Digite seu CPF" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+      <div class="input-group">
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+      <div class="input-group">
+        <label for="nome_completo">Nome Completo</label>
+        <input type="text" id="nome_completo" name="nome_completo" placeholder="Digite seu CPF ou e-mail" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+      
+      <div class="input-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+
+      <div class="input-group">
+        <label for="senha">Confirmar Senha</label>
+        <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="Confirme sua senha" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+
+      <div class="input-group">
+        <label for="senha">CNS</label>
+        <input type="text" id="CNS" name="CNS" placeholder="CNS" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+
+      <div class="input-group">
+        <label for="senha">CNES</label>
+        <input type="text" id="CNES" name="CNES" placeholder="CNES" required>
+        <span class="error-message">Campo obrigatório</span>
+      </div>
+      
+      <button type="submit" class="mainButton">Registrar</button>
+
+    </form>
+    
+    <footer>
+      SUS Digital © 2025 - Versão 1.0
+    </footer>
+  </div>
+</body>
+</html>
