@@ -6,8 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time" // Adicionado para lidar com datas
 	"strconv"
+	"time" // Adicionado para lidar com datas
+
+	"golang.org/x/crypto/bcrypt"
+
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -22,7 +25,7 @@ func main() {
 
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/cadastro_usuario", cadastro_usuario)
-	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)  
+	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)
 
 	log.Println("Server rodando na porta 8080")
 
@@ -93,7 +96,6 @@ func conexaoBanco() *sql.DB {
 		log.Fatalf("Erro ao criar tabela pacientes")
 	}
 
-
 	return database
 
 }
@@ -143,6 +145,16 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func hashearSenha(senha string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(senha), 10)
+	return string(bytes), err
+}
+
+func checarSenhaHash(senha, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(senha))
+	return err == nil
+}
+
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		http.ServeFile(w, r, "./static/login.html")
@@ -154,9 +166,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 		var senhaHasheada string
 
 		err := db.QueryRow("SELECT senha FROM usuarios_clinica WHERE CPF = $1", cpf_usuario).Scan(&senhaHasheada)
-		fmt.Println("Erro de Query: ", err)
-
-		fmt.Println(cpf_usuario, senha, senhaHasheada)
 
 		if err == sql.ErrNoRows {
 			http.Error(w, "Usuário não encontrado", http.StatusNotFound)
@@ -214,39 +223,40 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 		} else {
 			dataNascimento = sql.NullTime{Valid: false}
 		}
-	// Converter idade para SMALLINT
-	var idade sql.NullInt64
-	if idade_str != "" {
-		idadeVal, err := strconv.Atoi(idade_str)
-		if err != nil {
-			http.Error(w, "Formato de idade inválido", http.StatusBadRequest)
-			return
+		// Converter idade para SMALLINT
+		var idade sql.NullInt64
+		if idade_str != "" {
+			idadeVal, err := strconv.Atoi(idade_str)
+			if err != nil {
+				http.Error(w, "Formato de idade inválido", http.StatusBadRequest)
+				return
+			}
+			idade = sql.NullInt64{Int64: int64(idadeVal), Valid: true}
+		} else {
+			idade = sql.NullInt64{Valid: false}
 		}
-		idade = sql.NullInt64{Int64: int64(idadeVal), Valid: true}
-	} else {
-		idade = sql.NullInt64{Valid: false}
-	}
 
-	// Inserir dados no banco de dados
-	_, err := db.Exec(`INSERT INTO pacientes (
+		// Inserir dados no banco de dados
+		_, err := db.Exec(`INSERT INTO pacientes (
 		cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf, 
 		nacionalidade, data_nascimento, idade, raca_cor, raca_cor_outro, 
 		ddd, telefone, escolaridade, logradouro, complemento, uf, 
 		municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia
 	) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)`,
-		cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf,
-		nacionalidade, dataNascimento, idade, raca_cor, raca_cor_outro,
-		ddd, telefone, escolaridade, logradouro, complemento, uf,
-		municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia,
-	)
+			cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf,
+			nacionalidade, dataNascimento, idade, raca_cor, raca_cor_outro,
+			ddd, telefone, escolaridade, logradouro, complemento, uf,
+			municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia,
+		)
 
-	if err != nil {
-		log.Printf("Erro ao inserir paciente: %v", err) // Log para depuração
-		http.Error(w, "Erro ao cadastrar paciente. Verifique os dados e tente novamente.", http.StatusInternalServerError)
-		return
-	}
+		if err != nil {
+			log.Printf("Erro ao inserir paciente: %v", err) // Log para depuração
+			http.Error(w, "Erro ao cadastrar paciente. Verifique os dados e tente novamente.", http.StatusInternalServerError)
+			return
+		}
 
-	http.Redirect(w, r, "/cadastro_pacientes.html", http.StatusSeeOther) // Redirecionar após o sucesso
+		fmt.Println("Dados inseridos no banco com sucesso!")
+		http.Redirect(w, r, "/", http.StatusSeeOther) // Redirecionar após o sucesso
 	}
 
 }
