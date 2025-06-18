@@ -6,20 +6,12 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
-type Login struct {
-	senhaHasheada string
-	tokenSessao   string
-	tokenCSRF     string
-}
-
 var db = conexaoBanco()
-var usuarios = map[string]Login{}
 
 func main() {
 
@@ -56,7 +48,7 @@ func conexaoBanco() *sql.DB {
 		log.Fatalf("Erro ao conectar à database")
 	}
 
-	_, err = database.Query("CREATE TABLE IF NOT EXISTS usuarios_clinica (ID SERIAL PRIMARY KEY, CPF VARCHAR(15) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, nome_completo VARCHAR(64) NOT NULL, cns VARCHAR(15) NOT NULL, cnes VARCHAR(15) NOT NULL, senha VARCHAR(20) NOT NULL)")
+	_, err = database.Query("CREATE TABLE IF NOT EXISTS usuarios_clinica (ID SERIAL PRIMARY KEY, CPF VARCHAR(15) UNIQUE NOT NULL, email VARCHAR(100) UNIQUE NOT NULL, nome_completo VARCHAR(64) NOT NULL, cns VARCHAR(15) NOT NULL, cnes VARCHAR(15) NOT NULL, senha VARCHAR(500) NOT NULL)")
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela usuario_clinica")
 	}
@@ -74,9 +66,7 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		http.ServeFile(w, r, "./static/cadastro_usuario.html")
 		return
-	}
-
-	if r.Method == http.MethodPost {
+	} else if r.Method == http.MethodPost {
 
 		CPF := r.FormValue("CPF")
 		email := r.FormValue("email")
@@ -85,8 +75,6 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 		senha_confirmada := r.FormValue("confirmar_senha")
 		CNS := r.FormValue("CNS")
 		CNES := r.FormValue("CNES")
-
-		fmt.Println(CPF, email, nome_completo, senha, senha_confirmada, CNS, CNES)
 
 		if senha != senha_confirmada {
 			err := http.StatusNotAcceptable
@@ -97,111 +85,56 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 		//verificar se já existe a conta no banco de dados
 		var existe string
 		err := db.QueryRow("SELECT CPF FROM usuarios_clinica WHERE CPF = $1", CPF).Scan(&existe)
-		if err != sql.ErrNoRows {
+		if err == nil {
 			http.Error(w, "Usuário já cadastrado", http.StatusConflict)
+			return
+		}
+		if err != sql.ErrNoRows {
+			http.Error(w, "Erro ao verificar existência do usuário", http.StatusInternalServerError)
 			return
 		}
 
 		senha_hasheada, _ := hashearSenha(senha)
-		usuarios[CPF] = Login{
-			senhaHasheada: senha_hasheada,
+
+		_, err = db.Exec("INSERT INTO usuarios_clinica (CPF, email, nome_completo, cns, cnes, senha) VALUES ($1, $2, $3, $4, $5, $6)", CPF, email, nome_completo, CNS, CNES, senha_hasheada)
+		if err != nil {
+			http.Error(w, "Erro na inserção dos dados no banco de dados", http.StatusInternalServerError)
+			return
 		}
 
-		dados, err := db.Prepare("INSERT INTO usuarios_clinica (CPF, email, nome_completo, cns, cnes, senha) VALUES ($1, $2, $3, $4, $5, $6)")
-		if err != nil {
-			log.Fatal("Erro na inserção dos dados no banco de dados")
-		}
-		dados.Exec(CPF, email, nome_completo, CNS, CNES, senha_hasheada)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		err := http.StatusMethodNotAllowed
-		http.Error(w, "Tipo de solicitação inválida", err)
-		return
+	if r.Method == http.MethodGet {
+		http.ServeFile(w, r, "./static/login.html")
+	} else if r.Method == http.MethodPost {
+
+		cpf_usuario := r.FormValue("CPF")
+		senha := r.FormValue("senha")
+
+		var senhaHasheada string
+
+		err := db.QueryRow("SELECT senha FROM usuarios_clinica WHERE CPF = $1", cpf_usuario).Scan(&senhaHasheada)
+		fmt.Println("Erro de Query: ", err)
+
+		fmt.Println(cpf_usuario, senha, senhaHasheada)
+
+		if err == sql.ErrNoRows {
+			http.Error(w, "Usuário não encontrado", http.StatusNotFound)
+			return
+		}
+
+		if !checarSenhaHash(senha, senhaHasheada) {
+			http.Error(w, "Usuário ou senha inválidos", http.StatusUnauthorized)
+			return
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-
-	nome_usuario := r.FormValue("usuario")
-	senha := r.FormValue("senha")
-
-	usuario, ok := usuarios[nome_usuario]
-	if !ok || !checarSenhaHash(senha, usuario.senhaHasheada) {
-		err := http.StatusUnauthorized
-		http.Error(w, "Usuário ou senha inválidos", err)
-		return
-	}
-
-	tokenDeSessao := gerarTokenDeSessao(32)
-	tokenCSRF := gerarTokenDeSessao(32)
-
-	http.SetCookie(w, &http.Cookie{
-		Name:     "tokenCSRF",
-		Value:    tokenCSRF,
-		Expires:  time.Now().Add(1 * time.Hour),
-		HttpOnly: false,
-	})
-
-	http.SetCookie(w, &http.Cookie{
-		Name:     "tokenDeSessao",
-		Value:    tokenDeSessao,
-		Expires:  time.Now().Add(1 * time.Hour),
-		HttpOnly: true,
-	})
-
-	usuario.tokenCSRF = tokenCSRF
-	usuario.tokenSessao = tokenDeSessao
-	usuarios[nome_usuario] = usuario
-
-	fmt.Fprintln(w, "Logado com sucesso!")
 
 }
 
-func area_protegida(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		err := http.StatusMethodNotAllowed
-		http.Error(w, "Tipo de solicitação inválida", err)
-		return
-	}
 
-	if err := autorizar(r); err != nil {
-		er := http.StatusUnauthorized
-		http.Error(w, "Não Autorizado", er)
-		return
-	}
-
-	nome_usuario := r.FormValue("nome_usuario")
-	fmt.Fprintf(w, "Validação CSRF feita com sucesso! Bem vindo, %s", nome_usuario)
-}
-
-func logout(w http.ResponseWriter, r *http.Request) {
-	if err := autorizar(r); err != nil {
-		er := http.StatusUnauthorized
-		http.Error(w, "Não autorizado", er)
-		return
-	}
-
-	http.SetCookie(w, &http.Cookie{
-		Name:     "tokenDeSessao",
-		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
-		HttpOnly: true,
-	})
-
-	http.SetCookie(w, &http.Cookie{
-		Name:     "tokenCSRF",
-		Value:    "",
-		Expires:  time.Now().Add(-time.Hour),
-		HttpOnly: false,
-	})
-
-	nome_usuario := r.FormValue("nome_usuario")
-	usuario, _ := usuarios[nome_usuario]
-	usuario.tokenSessao = ""
-	usuario.tokenCSRF = ""
-	usuarios[nome_usuario] = usuario
-
-	fmt.Fprintln(w, "Deslogado com sucesso!")
-}
