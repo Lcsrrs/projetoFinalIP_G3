@@ -49,7 +49,7 @@ func conexaoBanco() *sql.DB {
 	dadosParaConexao := "user=" + usuarioBD + " dbname=" + nomeBD + " password=" + senhaUsuario + " host=localhost port=5432 sslmode=disable"
 	database, err := sql.Open("postgres", dadosParaConexao)
 	if err != nil {
-		fmt.Print(database)
+
 		log.Fatalf("Erro ao conectar à database")
 	}
 
@@ -63,7 +63,9 @@ func conexaoBanco() *sql.DB {
 	senha VARCHAR(500) NOT NULL
 	)`)
 	if err != nil {
+		fmt.Println(err)
 		log.Fatalf("Erro ao criar tabela usuario_clinica")
+		
 	}
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS pacientes (
