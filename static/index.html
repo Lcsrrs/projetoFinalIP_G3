@@ -14,12 +14,12 @@
     <nav class="navbar-custom">
         <div class="menu-esquerdo">
             <div class="menu-links">
-                <a href="./index.html">Inicio</a>
-                <a href="./cadastro_pacientes.html">Cadastro Paciente</a>
-                <a href="./anamnese1.html">Anamnese</a>
-                <a href="./exame_clinico.html">Exame Clínico</a>
+                <a href="/index">Inicio</a>
+                <a href="/cadastro_pacientes">Cadastro Paciente</a>
+                <a href="/consultar_paciente">Anamnese</a>
+                <a href="/exame_clinico">Exame Clínico</a>
             </div>
-            <a href="index.html">
+            <a href="index">
                 <div class="logo-centro">
                     <img src="https://webatendimento.saude.gov.br/backend/images/suporte-marcas_SUS%20Digital%20Profissional.png" alt="Logo">
                 </div>
@@ -40,10 +40,10 @@
         </div>
     </nav>
     <main>
-        <h2 class="pageTitle">Bem-Vindo, %s</h2>
+        <h2 class="pageTitle">Bem-Vindo, {{.}}</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4 homeCards">
             <div class="col">
-                <a href="./anamnese1.html" class="cardLink">
+                <a href="/consultar_paciente" class="cardLink">
                     <div class="card h-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-search card-img-top" viewBox="0 0 16 16">
                         <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
@@ -56,7 +56,7 @@
                 </a>
             </div>
             <div class="col">
-                <a href="./cadastro_pacientes.html" class="cardLink">
+                <a href="/cadastro_pacientes" class="cardLink">
                     <div class="card h-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-person-plus-fill card-img-top" viewBox="0 0 16 16">
                         <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
@@ -70,7 +70,7 @@
                 </a>
             </div>
             <div class="col">
-                <a href="./anamnese1.html" class="cardLink">
+                <a href="/consultar_paciente" class="cardLink">
                     <div class="card h-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-clipboard-plus-fill card-img-top" viewBox="0 0 16 16">
                         <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/>
@@ -84,7 +84,7 @@
                 </a>
             </div>
             <div class="col">
-                <a href="./exame_clinico.html" class="cardLink">
+                <a href="/exame_clinico" class="cardLink">
                     <div class="card h-100">
                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-clipboard2-plus-fill card-img-top" viewBox="0 0 16 16">
                         <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5"/>

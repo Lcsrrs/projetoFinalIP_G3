@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -15,17 +16,54 @@ import (
 	_ "github.com/lib/pq"
 )
 
+type dados_pessoais struct {
+	Ddd_telefone      int
+	Telefone          int
+	Logradouro        string
+	Complemento       string
+	Uf                string
+	Municipio         string
+	Cep               string
+	Numero_residencia string
+	Bairro            string
+	Codigo_municipio  string
+	Ponto_referencia  string
+}
+
+type paciente struct {
+	Id                      int
+	Cartao_sus              string
+	Nome_completo           string
+	Nome_mae                string
+	Apelido                 string
+	Cpf                     string
+	Nacionalidade           string
+	Data_nascimento         string
+	Idade                   int
+	Raca_cor                string
+	Raca_cor_outro          string
+	Escolaridade            string
+	Dados_pessoais_paciente dados_pessoais
+}
+
 var db = conexaoBanco()
+var tp1 *template.Template
+var resultado_busca []paciente
+var nome_usuario = "João"
 
 func main() {
 
 	// Criando um servidor
-	fs := http.FileServer(http.Dir("./static"))
-	http.Handle("/", fs)
+	// fs := http.FileServer(http.Dir("./static"))
+	// http.Handle("/", fs)
 
+	tp1, _ = template.ParseGlob("./static/*.html")
+
+	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/cadastro_usuario", cadastro_usuario)
 	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)
+	http.HandleFunc("/consultar_paciente", consultar_paciente)
 
 	log.Println("Server rodando na porta 8080")
 
@@ -34,6 +72,10 @@ func main() {
 		panic(err)
 	}
 
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	tp1.ExecuteTemplate(w, "index.html", nome_usuario)
 }
 
 // Realizando a conexão com o banco de dados
@@ -65,7 +107,7 @@ func conexaoBanco() *sql.DB {
 	if err != nil {
 		fmt.Println(err)
 		log.Fatalf("Erro ao criar tabela usuario_clinica")
-		
+
 	}
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS pacientes (
@@ -104,7 +146,7 @@ func conexaoBanco() *sql.DB {
 
 func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		http.ServeFile(w, r, "./static/cadastro_usuario.html")
+		tp1.ExecuteTemplate(w, "cadastro_usuario", nil)
 		return
 	} else if r.Method == http.MethodPost {
 
@@ -159,7 +201,7 @@ func checarSenhaHash(senha, hash string) bool {
 
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		http.ServeFile(w, r, "./static/login.html")
+		tp1.ExecuteTemplate(w, "./static/login.html", nil)
 	} else if r.Method == http.MethodPost {
 
 		cpf_usuario := r.FormValue("CPF")
@@ -186,7 +228,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		http.ServeFile(w, r, "./static/cadastro_pacientes.html")
+		tp1.ExecuteTemplate(w, "cadastro_pacientes.html", nil)
 		return
 	} else if r.Method == http.MethodPost {
 		// Extrair dados do formulário
@@ -243,8 +285,8 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 		cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf, 
 		nacionalidade, data_nascimento, idade, raca_cor, raca_cor_outro, 
 		ddd, telefone, escolaridade, logradouro, complemento, uf, 
-		municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia
-	) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)`,
+		municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)`,
 			cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf,
 			nacionalidade, dataNascimento, idade, raca_cor, raca_cor_outro,
 			ddd, telefone, escolaridade, logradouro, complemento, uf,
@@ -260,5 +302,63 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Dados inseridos no banco com sucesso!")
 		http.Redirect(w, r, "/", http.StatusSeeOther) // Redirecionar após o sucesso
 	}
+}
 
+func consultar_paciente(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		tp1.ExecuteTemplate(w, "consultar_paciente.html", resultado_busca)
+		return
+	} else if r.Method == http.MethodPost {
+		resultado_busca = nil
+		buscar := r.FormValue("campo_buscar")
+
+		resultado, err := db.Query("SELECT id, cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf, nacionalidade, data_nascimento, idade, raca_cor, raca_cor_outro, escolaridade, ddd, telefone, logradouro, complemento, uf, municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia FROM pacientes WHERE cpf = $1 OR cartao_sus = $1 OR nome_completo_mulher ILIKE '%' || $1 || '%'", buscar)
+		if err != nil {
+			log.Printf("Erro na consulta SQL: %v", err)
+			http.Error(w, "Erro ao buscar paciente", http.StatusInternalServerError)
+			return
+		}
+
+		defer resultado.Close()
+
+		for resultado.Next() {
+			var busca_paciente paciente
+
+			err := resultado.Scan(
+				&busca_paciente.Id,
+				&busca_paciente.Cartao_sus,
+				&busca_paciente.Nome_completo,
+				&busca_paciente.Nome_mae,
+				&busca_paciente.Apelido,
+				&busca_paciente.Cpf,
+				&busca_paciente.Nacionalidade,
+				&busca_paciente.Data_nascimento,
+				&busca_paciente.Idade,
+				&busca_paciente.Raca_cor,
+				&busca_paciente.Raca_cor_outro,
+				&busca_paciente.Escolaridade,
+				&busca_paciente.Dados_pessoais_paciente.Ddd_telefone,
+				&busca_paciente.Dados_pessoais_paciente.Telefone,
+				&busca_paciente.Dados_pessoais_paciente.Logradouro,
+				&busca_paciente.Dados_pessoais_paciente.Complemento,
+				&busca_paciente.Dados_pessoais_paciente.Uf,
+				&busca_paciente.Dados_pessoais_paciente.Municipio,
+				&busca_paciente.Dados_pessoais_paciente.Cep,
+				&busca_paciente.Dados_pessoais_paciente.Numero_residencia,
+				&busca_paciente.Dados_pessoais_paciente.Bairro,
+				&busca_paciente.Dados_pessoais_paciente.Codigo_municipio,
+				&busca_paciente.Dados_pessoais_paciente.Ponto_referencia,
+			)
+			if err != nil {
+				fmt.Println("Erro ao ler resultado, erro = ", err)
+				return
+			}
+
+			fmt.Println("Busca executada com sucesso")
+			resultado_busca = append(resultado_busca, busca_paciente)
+		}
+
+		http.Redirect(w, r, "/consultar_paciente", http.StatusSeeOther) // Redirecionar após o sucesso
+
+	}
 }
