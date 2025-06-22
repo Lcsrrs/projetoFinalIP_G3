@@ -54,10 +54,10 @@ var nome_usuario = "João"
 func main() {
 
 	// Criando um servidor
-	// fs := http.FileServer(http.Dir("./static"))
-	// http.Handle("/", fs)
-
 	tp1, _ = template.ParseGlob("./static/*.html")
+
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/login", login)
@@ -201,7 +201,7 @@ func checarSenhaHash(senha, hash string) bool {
 
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		tp1.ExecuteTemplate(w, "./static/login.html", nil)
+		tp1.ExecuteTemplate(w, "login.html", nil)
 	} else if r.Method == http.MethodPost {
 
 		cpf_usuario := r.FormValue("CPF")
