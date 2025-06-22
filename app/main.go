@@ -357,7 +357,7 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 
 func registrar_exame_clinico(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		tp1.ExecuteTemplate(w, "exame_clinico.html", nil)
+		tpl.ExecuteTemplate(w, "exame_clinico.html", nil)
 		return
 	} else if r.Method == http.MethodPost {
 		inspecao_colo := r.FormValue("inspecao_colo")
