@@ -64,6 +64,7 @@ func main() {
 	http.HandleFunc("/cadastro_usuario", cadastro_usuario)
 	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)
 	http.HandleFunc("/consultar_paciente", consultar_paciente)
+	http.HandleFunc("/exame_clinico", registrar_exame_clinico)
 
 	log.Println("Server rodando na porta 8080")
 
@@ -138,6 +139,16 @@ func conexaoBanco() *sql.DB {
 
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela pacientes")
+	}
+	_, err = database.Query(`CREATE TABLE IF NOT EXISTS exame_clinico (
+		id SERIAL PRIMARY KEY,
+		inspecao_colo VARCHAR(100),
+		sinais_dst VARCHAR(10),
+		data_coleta DATE,
+		responsavel VARCHAR(100)
+	)`)
+	if err != nil {
+		log.Fatalf("Erro ao criar tabela exame_clinico")
 	}
 
 	return database
@@ -301,6 +312,45 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println("Dados inseridos no banco com sucesso!")
 		http.Redirect(w, r, "/", http.StatusSeeOther) // Redirecionar após o sucesso
+	}
+}
+
+func registrar_exame_clinico(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		tp1.ExecuteTemplate(w, "exame_clinico.html", nil)
+		return
+	} else if r.Method == http.MethodPost {
+		inspecao_colo := r.FormValue("inspecao_colo")
+		sinais_dst := r.FormValue("sinais_dst")
+		data_coleta_str := r.FormValue("data_coleta")
+		responsavel := r.FormValue("responsavel")
+
+		//converter a data para o tipo de dado do SQL
+		var data_coleta sql.NullTime
+		if data_coleta_str != "" {
+			parsedData, err := time.Parse("2006-01-02", data_coleta_str)
+			if err != nil {
+				http.Error(w, "Data inválida. Use o formato YYYY-MM-DD", http.StatusBadRequest)
+				return
+			}
+			data_coleta = sql.NullTime{Time: parsedData, Valid: true}
+		} else {
+			data_coleta = sql.NullTime{Valid: false}
+		}
+
+		//Inserir dados na tabela (exame_clinico)
+		_, err := db.Exec(`INSERT INTO exame_clinico
+	 (inspecao_colo, sinais_dst, data_coleta, responsavel)
+	  VALUES ($1, $2, $3, $4)`,
+			inspecao_colo, sinais_dst, data_coleta, responsavel)
+
+		if err != nil {
+			log.Printf("Erro ao inserir dados exame clinico: %v", err)
+			http.Error(w, "Erro ao registrar exame clínico. Verifique os dados e tente novamente", http.StatusInternalServerError)
+			return
+		}
+		fmt.Println("Exame clínico registrado com sucesso!")
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }
 
