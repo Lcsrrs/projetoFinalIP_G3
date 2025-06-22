@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"time" // Adicionado para lidar com datas
 
+	"github.com/gorilla/context"
+	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/joho/godotenv"
@@ -47,36 +49,57 @@ type paciente struct {
 }
 
 var db = conexaoBanco()
-var tp1 *template.Template
+var nome_usuario string
+var tpl *template.Template
 var resultado_busca []paciente
-var nome_usuario = "João"
+var cookie_sessao = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
 
 	// Criando um servidor
-	tp1, _ = template.ParseGlob("./static/*.html")
+	tpl, _ = template.ParseGlob("./static/*.html")
 
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	http.HandleFunc("/", indexHandler)
+	http.HandleFunc("/", Autenticar(indexHandler))
 	http.HandleFunc("/login", login)
+	http.HandleFunc("/logout", logout)
 	http.HandleFunc("/cadastro_usuario", cadastro_usuario)
+	http.HandleFunc("/cadastro_pacientes", Autenticar(cadastrar_paciente))
+	http.HandleFunc("/consultar_paciente", Autenticar(consultar_paciente))
 	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)
 	http.HandleFunc("/consultar_paciente", consultar_paciente)
 	http.HandleFunc("/exame_clinico", registrar_exame_clinico)
 
 	log.Println("Server rodando na porta 8080")
 
-	err := http.ListenAndServe(":8080", nil)
+	err := http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		panic(err)
 	}
 
 }
 
+func Autenticar(HandlerFunc http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		err := godotenv.Load("./app/.env")
+		if err != nil {
+			log.Fatalf("Erro ao carregar .env")
+		}
+		token_sessao := os.Getenv("NOME_SESSAO")
+		sessao, _ := cookie_sessao.Get(r, token_sessao)
+		_, ok := sessao.Values["userID"]
+		if !ok {
+			http.Redirect(w, r, "/login", http.StatusFound)
+			return
+		}
+		HandlerFunc.ServeHTTP(w, r)
+	}
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
-	tp1.ExecuteTemplate(w, "index.html", nome_usuario)
+	tpl.ExecuteTemplate(w, "index.html", nome_usuario)
 }
 
 // Realizando a conexão com o banco de dados
@@ -157,7 +180,7 @@ func conexaoBanco() *sql.DB {
 
 func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		tp1.ExecuteTemplate(w, "cadastro_usuario", nil)
+		tpl.ExecuteTemplate(w, "cadastro_usuario.html", nil)
 		return
 	} else if r.Method == http.MethodPost {
 
@@ -212,9 +235,8 @@ func checarSenhaHash(senha, hash string) bool {
 
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		tp1.ExecuteTemplate(w, "login.html", nil)
+		tpl.ExecuteTemplate(w, "login.html", nil)
 	} else if r.Method == http.MethodPost {
-
 		cpf_usuario := r.FormValue("CPF")
 		senha := r.FormValue("senha")
 
@@ -232,14 +254,32 @@ func login(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
+		var userID string
 
+		linha := db.QueryRow("SELECT id, nome_completo FROM usuarios_clinica WHERE CPF = $1", cpf_usuario)
+		err = linha.Scan(&userID, &nome_usuario)
+		if err != nil {
+			fmt.Println("Erro ao atribuir varíaveis")
+		}
+		if err == nil {
+			sessao, _ := cookie_sessao.Get(r, "session")
+			sessao.Values["userID"] = userID
+			sessao.Save(r, w)
+			http.Redirect(w, r, "/", http.StatusSeeOther)
+		}
+	}
+}
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	sessao, _ := cookie_sessao.Get(r, "session")
+	delete(sessao.Values, "userID")
+	sessao.Save(r, w)
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
 func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		tp1.ExecuteTemplate(w, "cadastro_pacientes.html", nil)
+		tpl.ExecuteTemplate(w, "cadastro_pacientes.html", nil)
 		return
 	} else if r.Method == http.MethodPost {
 		// Extrair dados do formulário
@@ -356,7 +396,7 @@ func registrar_exame_clinico(w http.ResponseWriter, r *http.Request) {
 
 func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
-		tp1.ExecuteTemplate(w, "consultar_paciente.html", resultado_busca)
+		tpl.ExecuteTemplate(w, "consultar_paciente.html", resultado_busca)
 		return
 	} else if r.Method == http.MethodPost {
 		resultado_busca = nil

@@ -69,6 +69,10 @@ main {
     padding: 30px;
 }
 
+.menu-direito a svg{
+    color: #0a7269;
+}
+
 .dropdown-toggle::after {
   display: none;
 }
