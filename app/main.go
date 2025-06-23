@@ -355,8 +355,8 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fmt.Println("Dados inseridos no banco com sucesso!")
-		http.Redirect(w, r, "/", http.StatusSeeOther) // Redirecionar após o sucesso
+		fmt.Println("Paciente inserido com sucesso, redirecionando para /sucesso")
+		http.Redirect(w, r, "/sucesso", http.StatusSeeOther) // Redirecionar após o sucesso (para a página de sucesso)
 	}
 }
 
