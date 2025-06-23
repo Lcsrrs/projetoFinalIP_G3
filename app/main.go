@@ -68,9 +68,9 @@ func main() {
 	http.HandleFunc("/cadastro_usuario", cadastro_usuario)
 	http.HandleFunc("/cadastro_pacientes", Autenticar(cadastrar_paciente))
 	http.HandleFunc("/consultar_paciente", Autenticar(consultar_paciente))
-	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)
-	http.HandleFunc("/consultar_paciente", consultar_paciente)
-	http.HandleFunc("/exame_clinico", registrar_exame_clinico)
+	//http.HandleFunc("/cadastro_pacientes", cadastrar_paciente) => Duplicada!
+	//http.HandleFunc("/consultar_paciente", consultar_paciente) => Duplicada!
+	http.HandleFunc("/exame_clinico", Autenticar(registrar_exame_clinico))
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 
 	log.Println("Server rodando na porta 8080")
