@@ -1,0 +1,17 @@
+.mensagem-sucesso {
+    font-size: 1.2rem;
+    color: rgb(4, 78, 41);
+    text-align: center;
+    margin: 2rem 0;
+}
+.btn-voltar {
+    display: block;
+    margin: 0 auto;
+    padding: 0.5rem 1.5rem;
+    background-color: rgb(4, 78, 41);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    width: fit-content;
+}

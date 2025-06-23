@@ -71,6 +71,7 @@ func main() {
 	http.HandleFunc("/cadastro_pacientes", cadastrar_paciente)
 	http.HandleFunc("/consultar_paciente", consultar_paciente)
 	http.HandleFunc("/exame_clinico", registrar_exame_clinico)
+	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 
 	log.Println("Server rodando na porta 8080")
 
@@ -100,6 +101,10 @@ func Autenticar(HandlerFunc http.HandlerFunc) http.HandlerFunc {
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	tpl.ExecuteTemplate(w, "index.html", nome_usuario)
+}
+
+func paginaSucesso(w http.ResponseWriter, r *http.Request) {
+	tpl.ExecuteTemplate(w, "sucesso.html", nil)
 }
 
 // Realizando a conexão com o banco de dados
@@ -218,7 +223,7 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/sucesso", http.StatusSeeOther)
 	}
 
 }
@@ -390,7 +395,7 @@ func registrar_exame_clinico(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		fmt.Println("Exame clínico registrado com sucesso!")
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "/sucesso", http.StatusSeeOther)
 	}
 }
 
