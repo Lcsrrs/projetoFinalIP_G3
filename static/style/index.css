@@ -66,15 +66,25 @@ main {
     margin-right: 20px;
     font-size: 1.5rem;
     color: #0a7269;
+    padding: 30px;
 }
 
-.menu-direito {
-    padding: 30px;
-    border-radius: 100%;
+.menu-direito a svg{
+    color: #0a7269;
 }
+
+.dropdown-toggle::after {
+  display: none;
+}
+
 .menu-direito svg:hover {
     background-color: rgb(202, 202, 202);
     cursor: pointer;
+}
+
+.navbar-nav {
+    display: inline;
+    text-decoration: none;
 }
 
 @media (max-width: 1400px) {
@@ -113,6 +123,17 @@ form{
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     font-size: medium;
 }
+
+section {
+    width: 90%;
+    margin: 30px auto;
+    padding: 30px 7% 30px;
+    background-color: white;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-size: medium;
+}
+
 .form-group{
     margin-bottom: 15px;
    
