@@ -63,7 +63,7 @@ func conexaoBanco() *sql.DB {
 	senha VARCHAR(500) NOT NULL
 	)`)
 	if err != nil {
-		log.Fatalf("Erro ao criar tabela usuario_clinica")
+		log.Fatalf("Erro ao criar tabela usuarios_clinica")
 	}
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS pacientes (
