@@ -94,7 +94,9 @@
                 </div>
                 <div class="form-group col-md-5">
                     <label>Raça/Cor</label>
-                    <select class="form-control" name="raca_cor" onchange="toggleOutroInput(this)">
+                <div class="select-icon-container">
+                <select id="raca_cor" class="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-blue-500 transition duration-150 ease-in-out"
+                        name="raca_cor" onchange="toggleOutroInput(this)">
                     <option selected disabled>Selecionar</option>
                     <option>Branca</option>
                     <option>Preta</option>
@@ -102,7 +104,8 @@
                     <option>Amarela</option>
                     <option>Indígena</option>
                     <option value="Etnia">Etnia</option>
-                    </select>
+                </select>
+            </div>
                     <input type="text" class="form-control outro-input" name="raca_cor_outro" placeholder="Por favor, especifique">
                 </div>
                     <div class="form-group col-md-2">
@@ -141,7 +144,7 @@
                     <div class="form-group col-md-2">
                         <div class="form-group">
                             <label>UF</label>
-                            <select class="form-control" name="uf">
+                            <select class="form-control" name="uf" >
                                 <option selected disabled>Selecione a UF</option>
                                 <option value="AC">AC</option>
                                 <option value="AL">AL</option>
