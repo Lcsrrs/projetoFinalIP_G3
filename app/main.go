@@ -68,10 +68,10 @@ func main() {
 	http.HandleFunc("/cadastro_usuario", cadastro_usuario)
 	http.HandleFunc("/cadastro_pacientes", Autenticar(cadastrar_paciente))
 	http.HandleFunc("/consultar_paciente", Autenticar(consultar_paciente))
-	//http.HandleFunc("/cadastro_pacientes", cadastrar_paciente) => Duplicada!
-	//http.HandleFunc("/consultar_paciente", consultar_paciente) => Duplicada!
 	http.HandleFunc("/exame_clinico", Autenticar(registrar_exame_clinico))
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
+	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultar_atendimento_previo))
+	http.HandleFunc("/anamnese", Autenticar(anamnese))
 
 	log.Println("Server rodando na porta 8080")
 
@@ -136,8 +136,6 @@ func conexaoBanco() *sql.DB {
 	if err != nil {
 		fmt.Println(err)
 		log.Fatalf("Erro ao criar tabela usuario_clinica")
-
-		log.Fatalf("Erro ao criar tabela usuarios_clinica")
 	}
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS pacientes (
@@ -456,5 +454,19 @@ func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 
 		http.Redirect(w, r, "/consultar_paciente", http.StatusSeeOther) // Redirecionar após o sucesso
 
+	}
+}
+
+func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", nil)
+		return
+	}
+}
+
+func anamnese(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		tpl.ExecuteTemplate(w, "anamnese.html", nil)
+		return
 	}
 }
