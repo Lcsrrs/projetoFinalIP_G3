@@ -94,8 +94,8 @@ func main() {
 	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultar_atendimento_previo))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
 	// http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
-	http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
-	http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
+	//http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
+	//http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
 
 	log.Println("Server rodando na porta 8080")
 
