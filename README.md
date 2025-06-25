@@ -110,7 +110,6 @@ Ao rodar o projeto pela primeira vez, ele cria automaticamente as tabelas necess
 ## 🚩 Observações
 
 - Este projeto é acadêmico e não deve ser utilizado diretamente em ambiente de produção sem as devidas validações de segurança, autenticação robusta e tratamento de dados sensíveis.
-- O foco principal foi desenvolver um back-end funcional, sem priorizar a camada de front-end.
 
 ---
 
