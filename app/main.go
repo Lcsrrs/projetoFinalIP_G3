@@ -75,12 +75,13 @@ var cookie_sessao = sessions.NewCookieStore([]byte("super-secret"))
 
 func main() {
 
-	// Criando um servidor
+	// Carregar o arquivo .env
+	err := godotenv.Load("./app/.env")
 	tpl, _ = template.ParseGlob("./static/*.html")
-
+	
 	fs := http.FileServer(http.Dir("./static"))
+	
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
-
 	http.HandleFunc("/", Autenticar(indexHandler))
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logout", logout)
@@ -103,7 +104,8 @@ func main() {
 	}
 
 }
-
+// Função Autenticar
+// Esta função é um middleware que verifica se o usuário está autenticado antes de permitir o acesso.
 func Autenticar(HandlerFunc http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := godotenv.Load("./app/.env")
