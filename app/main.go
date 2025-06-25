@@ -146,6 +146,9 @@ func conexaoBanco() *sql.DB {
 		log.Fatalf("Erro ao conectar à database")
 	}
 
+	//Criando as tabelas no banco de dados
+	// Cria a tabela usuarios_clinica
+
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS usuarios_clinica (
 	ID SERIAL PRIMARY KEY,
 	CPF VARCHAR(15) UNIQUE NOT NULL, 
@@ -159,6 +162,8 @@ func conexaoBanco() *sql.DB {
 		fmt.Println(err)
 		log.Fatalf("Erro ao criar tabela usuario_clinica")
 	}
+
+	// Cria a tabela pacientes
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS pacientes (
 	ID SERIAL PRIMARY KEY,
@@ -189,6 +194,8 @@ func conexaoBanco() *sql.DB {
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela pacientes")
 	}
+
+	//cria a tabela exame_clinico
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS exame_clinico (
 		id SERIAL PRIMARY KEY,
 		inspecao_colo VARCHAR(100),
@@ -199,6 +206,7 @@ func conexaoBanco() *sql.DB {
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela exame_clinico")
 	}
+	//cria a tabela anamnese
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS anamnese (
     id SERIAL PRIMARY KEY,
@@ -224,6 +232,11 @@ func conexaoBanco() *sql.DB {
 	return database
 
 }
+// Função para cadastrar um usuário
+// Esta função é responsável por lidar com o cadastro de novos usuários na clínica
+// Ela verifica se o método da requisição é GET ou POST, processa os dados do formulário
+// e insere as informações no banco de dados, além de lidar com erros comuns como senhas não correspondentes
+// e usuários já cadastrados.
 
 func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
@@ -256,8 +269,12 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Erro ao verificar existência do usuário", http.StatusInternalServerError)
 			return
 		}
-
+		
+		// insere a senha hasheado no banco de dados
 		senha_hasheada, _ := hashearSenha(senha)
+
+		// Inserir os dados do usuário no banco de dados
+		// A consulta SQL insere os dados do usuário na tabela usuarios_clinica	
 
 		_, err = db.Exec("INSERT INTO usuarios_clinica (CPF, email, nome_completo, cns, cnes, senha) VALUES ($1, $2, $3, $4, $5, $6)", CPF, email, nome_completo, CNS, CNES, senha_hasheada)
 		if err != nil {
@@ -270,6 +287,8 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// Funções auxiliares para hashear e verificar senhas
+// Essas funções utilizam o pacote bcrypt para gerar um hash seguro da senha do usuário
 func hashearSenha(senha string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(senha), 10)
 	return string(bytes), err
@@ -279,6 +298,8 @@ func checarSenhaHash(senha, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(senha))
 	return err == nil
 }
+// Funções de login e logout
+// Essas funções lidam com o processo de autenticação do usuário, verificando as credenciais.
 
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
@@ -323,7 +344,8 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	sessao.Save(r, w)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
-
+// Funções para cadastro de pacientes e registro de exames clínicos
+// Essas funções lidam com o cadastro de novos pacientes e o registro de exames clínicos.
 func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tpl.ExecuteTemplate(w, "cadastro_pacientes.html", nil)
@@ -365,7 +387,10 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 		} else {
 			dataNascimento = sql.NullTime{Valid: false}
 		}
-		// Converter idade para SMALLINT
+		//Converter idade para SMALLINT
+		//o tipo SMALLINT em bancos de dados geralmente armazene números menores
+		//garante que a idade seja convertida de forma segura, tratando tanto os casos em que a idade não é informada
+		//e deve ser nula quanto os casos em que é informada, mas em um formato inválido.
 		var idade sql.NullInt64
 		if idade_str != "" {
 			idadeVal, err := strconv.Atoi(idade_str)
@@ -378,7 +403,8 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 			idade = sql.NullInt64{Valid: false}
 		}
 
-		// Inserir dados no banco de dados
+		// Inserir dados na tabela pacientes
+		// A consulta SQL insere os dados do paciente na tabela pacientes
 		_, err := db.Exec(`INSERT INTO pacientes (
 		cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf, 
 		nacionalidade, data_nascimento, idade, raca_cor, raca_cor_outro, 
@@ -401,6 +427,9 @@ func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/sucesso", http.StatusSeeOther) // Redirecionar após o sucesso (para a página de sucesso)
 	}
 }
+
+// Função para registrar exame clínico
+// Esta função é responsável por lidar com o registro de exames clínicos, recebendo os dados.
 
 func registrar_exame_clinico(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
@@ -441,6 +470,9 @@ func registrar_exame_clinico(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Função para consultar pacientes
+// Esta função lida com a consulta de pacientes, permitindo buscar por CPF, Cartão SUS ou nome completo.
+// Ela exibe os resultados em uma página HTML, permitindo que o usuário veja os detalhes do paciente.
 func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tpl.ExecuteTemplate(w, "consultar_paciente.html", resultado_busca)
@@ -500,6 +532,9 @@ func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Função para consultar atendimentos prévios
+// Esta função permite consultar atendimentos prévios de um paciente, exibindo os dados em uma página HTML.
+
 func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", nil)
@@ -507,6 +542,8 @@ func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Função para registrar anamnese
+// Esta função lida com o registro de anamneses, recebendo os dados do formulário
 func anamnese(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodGet {
         tpl.ExecuteTemplate(w, "anamnese.html", nil)
@@ -545,7 +582,8 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
             dataMenstruacao = sql.NullTime{Time: parsedDate, Valid: true}
         }
 
-       
+       // Inserir dados na tabela anamnese
+		// A consulta SQL insere os dados do paciente na tabela anamnese
         _, err = db.Exec(`INSERT INTO anamnese (
             paciente_id, motivo_exame, fez_preventivo, detalhes_preventivo, 
             usa_diu, gravidez, usa_anticoncepcional, usa_hormonio_menopausa, 
@@ -567,6 +605,8 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+// Função para editar anamnese
+// Esta função permite editar uma anamnese existente, recebendo os dados do formulário e atualizando o banco de dados.
 func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
     if r.Method == http.MethodGet {
         pacienteID := r.URL.Query().Get("paciente_id")
@@ -580,7 +620,7 @@ func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
             http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
             return
         }
-
+		// Consultar anamneses do paciente
         rows, err := db.Query(`
             SELECT a.id, p.nome_completo_mulher, p.cpf, 
                    a.motivo_exame, a.data_registro, a.numero_protocolo
