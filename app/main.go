@@ -53,6 +53,7 @@ type anamnese struct {
     PacienteID             int
     NomePaciente           string 
     CPF                    string
+    NumeroProtocolo        string
     MotivoExame            string
     FezPreventivo          string
     DetalhesPreventivo     string
@@ -92,7 +93,7 @@ func main() {
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultar_atendimento_previo))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
-	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
+	// http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
 	http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
 	http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
 
