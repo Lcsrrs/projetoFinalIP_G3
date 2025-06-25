@@ -51,6 +51,8 @@ type paciente struct {
 type anamnese struct {
     ID                     int
     PacienteID             int
+    NomePaciente           string 
+    CPF                    string
     MotivoExame            string
     FezPreventivo          string
     DetalhesPreventivo     string
@@ -89,7 +91,9 @@ func main() {
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultar_atendimento_previo))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
-	http.HandleFunc("/consultar_anamnese", Autenticar(consultarAnamnese))
+	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
+	http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
+	http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
 
 	log.Println("Server rodando na porta 8080")
 
@@ -197,20 +201,21 @@ func conexaoBanco() *sql.DB {
 	}
 
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS anamnese (
-                id SERIAL PRIMARY KEY,
-                paciente_id INTEGER REFERENCES pacientes(id),
-		motivo_exame VARCHAR(100) NOT NULL,
-                fez_preventivo VARCHAR(20) NOT NULL,
-                detalhes_preventivo TEXT,
-                usa_diu VARCHAR(20) NOT NULL,
-                gravidez VARCHAR(20) NOT NULL,
-                usa_anticoncepcional VARCHAR(20) NOT NULL,
-                usa_hormonio_menopausa VARCHAR(20) NOT NULL,
-                fez_radioterapia VARCHAR(20) NOT NULL,
-                data_ultima_menstruacao DATE,
-                sangramento_pos_relacao VARCHAR(50) NOT NULL,
-                sangramento_pos_menopausa VARCHAR(50) NOT NULL,
-                data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id SERIAL PRIMARY KEY,
+        paciente_id INTEGER REFERENCES pacientes(id),
+        numero_protocolo VARCHAR(20) NOT NULL,
+        motivo_exame VARCHAR(100) NOT NULL,
+        fez_preventivo VARCHAR(20) NOT NULL,
+        detalhes_preventivo TEXT,
+        usa_diu VARCHAR(20) NOT NULL,
+        gravidez VARCHAR(20) NOT NULL,
+        usa_anticoncepcional VARCHAR(20) NOT NULL,
+        usa_hormonio_menopausa VARCHAR(20) NOT NULL,
+        fez_radioterapia VARCHAR(20) NOT NULL,
+        data_ultima_menstruacao DATE,
+        sangramento_pos_relacao VARCHAR(50) NOT NULL,
+        sangramento_pos_menopausa VARCHAR(50) NOT NULL,
+        data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )`)
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela anamnese: %v", err)
@@ -507,8 +512,9 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
         tpl.ExecuteTemplate(w, "anamnese.html", nil)
         return
     } else if r.Method == http.MethodPost {
-        
-        pacienteID := r.FormValue("paciente_id") // Você precisará passar o ID do paciente
+	    
+        numeroProtocolo := fmt.Sprintf("%d", time.Now().Unix())
+        pacienteID := r.FormValue("paciente_id") 
         motivoExame := r.FormValue("radioQ1")
         fezPreventivo := r.FormValue("radioQ2")
         detalhesPreventivo := r.FormValue("outro-input")
@@ -544,12 +550,12 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
             paciente_id, motivo_exame, fez_preventivo, detalhes_preventivo, 
             usa_diu, gravidez, usa_anticoncepcional, usa_hormonio_menopausa, 
             fez_radioterapia, data_ultima_menstruacao, 
-            sangramento_pos_relacao, sangramento_pos_menopausa
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+            sangramento_pos_relacao, sangramento_pos_menopausa, numero_protocolo
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
             pacienteIDInt, motivoExame, fezPreventivo, detalhesPreventivo,
             usaDiu, gravidez, usaAnticoncepcional, usaHormonioMenopausa,
             fezRadioterapia, dataMenstruacao,
-            sangramentoPosRelacao, sangramentoPosMenopausa)
+            sangramentoPosRelacao, sangramentoPosMenopausa, numero_protocolo)
 
         if err != nil {
             log.Printf("Erro ao inserir anamnese: %v", err)
@@ -575,7 +581,14 @@ func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
             return
         }
 
-        rows, err := db.Query("SELECT * FROM anamnese WHERE paciente_id = $1 ORDER BY data_registro DESC", id)
+        rows, err := db.Query(`
+            SELECT a.id, p.nome_completo_mulher, p.cpf, 
+                   a.motivo_exame, a.data_registro, a.numero_protocolo
+            FROM anamnese a
+            JOIN pacientes p ON a.paciente_id = p.id
+            WHERE a.paciente_id = $1
+            ORDER BY a.data_registro DESC`, id)
+        
         if err != nil {
             http.Error(w, "Erro ao consultar anamnese", http.StatusInternalServerError)
             return
@@ -586,10 +599,8 @@ func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
         for rows.Next() {
             var a anamnese
             err := rows.Scan(
-                &a.ID, &a.PacienteID, &a.MotivoExame, &a.FezPreventivo,
-                &a.DetalhesPreventivo, &a.UsaDiu, &a.Gravidez, &a.UsaAnticoncepcional,
-                &a.UsaHormonioMenopausa, &a.FezRadioterapia, &a.DataUltimaMenstruacao,
-                &a.SangramentoPosRelacao, &a.SangramentoPosMenopausa, &a.DataRegistro,
+                &a.ID, &a.NomePaciente, &a.CPF,
+                &a.MotivoExame, &a.DataRegistro, &a.NumeroProtocolo,
             )
             if err != nil {
                 http.Error(w, "Erro ao ler anamnese", http.StatusInternalServerError)
@@ -598,6 +609,16 @@ func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
             anamneses = append(anamneses, a)
         }
 
-        tpl.ExecuteTemplate(w, "consultar_anamnese.html", anamneses)
+        data := struct {
+            NomePaciente string
+            CPF          string
+            Anamneses    []anamnese
+        }{
+            NomePaciente: anamneses[0].NomePaciente,
+            CPF:         anamneses[0].CPF,
+            Anamneses:    anamneses,
+        }
+
+        tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", data)
     }
 }
