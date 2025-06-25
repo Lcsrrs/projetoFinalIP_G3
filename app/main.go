@@ -48,6 +48,23 @@ type paciente struct {
 	Dados_pessoais_paciente dados_pessoais
 }
 
+type anamnese struct {
+    ID                     int
+    PacienteID             int
+    MotivoExame            string
+    FezPreventivo          string
+    DetalhesPreventivo     string
+    UsaDiu                 string
+    Gravidez               string
+    UsaAnticoncepcional    string
+    UsaHormonioMenopausa   string
+    FezRadioterapia        string
+    DataUltimaMenstruacao  sql.NullTime
+    SangramentoPosRelacao  string
+    SangramentoPosMenopausa string
+    DataRegistro           time.Time
+}
+
 var db = conexaoBanco()
 var nome_usuario string
 var tpl *template.Template
@@ -72,6 +89,7 @@ func main() {
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultar_atendimento_previo))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
+	http.HandleFunc("/consultar_anamnese", Autenticar(consultarAnamnese))
 
 	log.Println("Server rodando na porta 8080")
 
@@ -176,6 +194,26 @@ func conexaoBanco() *sql.DB {
 	)`)
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela exame_clinico")
+	}
+
+	_, err = database.Query(`CREATE TABLE IF NOT EXISTS anamnese (
+                id SERIAL PRIMARY KEY,
+                paciente_id INTEGER REFERENCES pacientes(id),
+		motivo_exame VARCHAR(100) NOT NULL,
+                fez_preventivo VARCHAR(20) NOT NULL,
+                detalhes_preventivo TEXT,
+                usa_diu VARCHAR(20) NOT NULL,
+                gravidez VARCHAR(20) NOT NULL,
+                usa_anticoncepcional VARCHAR(20) NOT NULL,
+                usa_hormonio_menopausa VARCHAR(20) NOT NULL,
+                fez_radioterapia VARCHAR(20) NOT NULL,
+                data_ultima_menstruacao DATE,
+                sangramento_pos_relacao VARCHAR(50) NOT NULL,
+                sangramento_pos_menopausa VARCHAR(50) NOT NULL,
+                data_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)`)
+	if err != nil {
+		log.Fatalf("Erro ao criar tabela anamnese: %v", err)
 	}
 
 	return database
@@ -465,8 +503,101 @@ func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
 }
 
 func anamnese(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		tpl.ExecuteTemplate(w, "anamnese.html", nil)
-		return
-	}
+    if r.Method == http.MethodGet {
+        tpl.ExecuteTemplate(w, "anamnese.html", nil)
+        return
+    } else if r.Method == http.MethodPost {
+        
+        pacienteID := r.FormValue("paciente_id") // Você precisará passar o ID do paciente
+        motivoExame := r.FormValue("radioQ1")
+        fezPreventivo := r.FormValue("radioQ2")
+        detalhesPreventivo := r.FormValue("outro-input")
+        usaDiu := r.FormValue("radioQ3")
+        gravidez := r.FormValue("radioQ4")
+        usaAnticoncepcional := r.FormValue("radioQ5")
+        usaHormonioMenopausa := r.FormValue("radioQ6")
+        fezRadioterapia := r.FormValue("radioQ7")
+        dataUltimaMenstruacao := r.FormValue("date-input")
+        sangramentoPosRelacao := r.FormValue("radioQ8")
+        sangramentoPosMenopausa := r.FormValue("radioQ9")
+
+       
+        pacienteIDInt, err := strconv.Atoi(pacienteID)
+        if err != nil {
+            http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
+            return
+        }
+
+       
+        var dataMenstruacao sql.NullTime
+        if dataUltimaMenstruacao != "" {
+            parsedDate, err := time.Parse("2006-01-02", dataUltimaMenstruacao)
+            if err != nil {
+                http.Error(w, "Formato de data inválido", http.StatusBadRequest)
+                return
+            }
+            dataMenstruacao = sql.NullTime{Time: parsedDate, Valid: true}
+        }
+
+       
+        _, err = db.Exec(`INSERT INTO anamnese (
+            paciente_id, motivo_exame, fez_preventivo, detalhes_preventivo, 
+            usa_diu, gravidez, usa_anticoncepcional, usa_hormonio_menopausa, 
+            fez_radioterapia, data_ultima_menstruacao, 
+            sangramento_pos_relacao, sangramento_pos_menopausa
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+            pacienteIDInt, motivoExame, fezPreventivo, detalhesPreventivo,
+            usaDiu, gravidez, usaAnticoncepcional, usaHormonioMenopausa,
+            fezRadioterapia, dataMenstruacao,
+            sangramentoPosRelacao, sangramentoPosMenopausa)
+
+        if err != nil {
+            log.Printf("Erro ao inserir anamnese: %v", err)
+            http.Error(w, "Erro ao registrar anamnese", http.StatusInternalServerError)
+            return
+        }
+
+        http.Redirect(w, r, "/sucesso", http.StatusSeeOther)
+    }
+}
+
+func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
+    if r.Method == http.MethodGet {
+        pacienteID := r.URL.Query().Get("paciente_id")
+        if pacienteID == "" {
+            http.Error(w, "ID do paciente não fornecido", http.StatusBadRequest)
+            return
+        }
+
+        id, err := strconv.Atoi(pacienteID)
+        if err != nil {
+            http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
+            return
+        }
+
+        rows, err := db.Query("SELECT * FROM anamnese WHERE paciente_id = $1 ORDER BY data_registro DESC", id)
+        if err != nil {
+            http.Error(w, "Erro ao consultar anamnese", http.StatusInternalServerError)
+            return
+        }
+        defer rows.Close()
+
+        var anamneses []anamnese
+        for rows.Next() {
+            var a anamnese
+            err := rows.Scan(
+                &a.ID, &a.PacienteID, &a.MotivoExame, &a.FezPreventivo,
+                &a.DetalhesPreventivo, &a.UsaDiu, &a.Gravidez, &a.UsaAnticoncepcional,
+                &a.UsaHormonioMenopausa, &a.FezRadioterapia, &a.DataUltimaMenstruacao,
+                &a.SangramentoPosRelacao, &a.SangramentoPosMenopausa, &a.DataRegistro,
+            )
+            if err != nil {
+                http.Error(w, "Erro ao ler anamnese", http.StatusInternalServerError)
+                return
+            }
+            anamneses = append(anamneses, a)
+        }
+
+        tpl.ExecuteTemplate(w, "consultar_anamnese.html", anamneses)
+    }
 }
