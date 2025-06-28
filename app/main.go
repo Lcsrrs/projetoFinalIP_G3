@@ -48,24 +48,24 @@ type paciente struct {
 	Dados_pessoais_paciente dados_pessoais
 }
 
-type anamnese struct {
-    ID                     int
-    PacienteID             int
-    NomePaciente           string 
-    CPF                    string
-    NumeroProtocolo        string
-    MotivoExame            string
-    FezPreventivo          string
-    DetalhesPreventivo     string
-    UsaDiu                 string
-    Gravidez               string
-    UsaAnticoncepcional    string
-    UsaHormonioMenopausa   string
-    FezRadioterapia        string
-    DataUltimaMenstruacao  sql.NullTime
-    SangramentoPosRelacao  string
-    SangramentoPosMenopausa string
-    DataRegistro           time.Time
+type dados_anamnese struct {
+	ID                      int
+	PacienteID              int
+	NomePaciente            string
+	CPF                     string
+	MotivoExame             string
+	FezPreventivo           string
+	DetalhesPreventivo      string
+	UsaDiu                  string
+	Gravidez                string
+	UsaAnticoncepcional     string
+	UsaHormonioMenopausa    string
+	FezRadioterapia         string
+	DataUltimaMenstruacao   sql.NullTime
+	SangramentoPosRelacao   string
+	SangramentoPosMenopausa string
+	DataRegistro            time.Time
+	NumeroProtocolo         string
 }
 
 var db = conexaoBanco()
@@ -91,11 +91,10 @@ func main() {
 	http.HandleFunc("/consultar_paciente", Autenticar(consultar_paciente))
 	http.HandleFunc("/exame_clinico", Autenticar(registrar_exame_clinico))
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
-	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultar_atendimento_previo))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
-	// http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
-	//http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
-	//http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
+	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
+	http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
+	http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
 
 	log.Println("Server rodando na porta 8080")
 
@@ -282,6 +281,7 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 		_, err = db.Exec("INSERT INTO usuarios_clinica (CPF, email, nome_completo, cns, cnes, senha) VALUES ($1, $2, $3, $4, $5, $6)", CPF, email, nome_completo, CNS, CNES, senha_hasheada)
 		if err != nil {
 			http.Error(w, "Erro na inserção dos dados no banco de dados", http.StatusInternalServerError)
+			fmt.Println("Erro: %v", err)
 			return
 		}
 
@@ -535,9 +535,6 @@ func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Função para consultar atendimentos prévios
-// Esta função permite consultar atendimentos prévios de um paciente, exibindo os dados em uma página HTML.
-
 func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodGet {
 		tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", nil)
@@ -585,83 +582,82 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
             dataMenstruacao = sql.NullTime{Time: parsedDate, Valid: true}
         }
 
-       // Inserir dados na tabela anamnese
-		// A consulta SQL insere os dados do paciente na tabela anamnese
+       
         _, err = db.Exec(`INSERT INTO anamnese (
             paciente_id, motivo_exame, fez_preventivo, detalhes_preventivo, 
             usa_diu, gravidez, usa_anticoncepcional, usa_hormonio_menopausa, 
             fez_radioterapia, data_ultima_menstruacao, 
             sangramento_pos_relacao, sangramento_pos_menopausa, numero_protocolo
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
-            pacienteIDInt, motivoExame, fezPreventivo, detalhesPreventivo,
-            usaDiu, gravidez, usaAnticoncepcional, usaHormonioMenopausa,
-            fezRadioterapia, dataMenstruacao,
-            sangramentoPosRelacao, sangramentoPosMenopausa, numero_protocolo)
+			pacienteIDInt, motivoExame, fezPreventivo, detalhesPreventivo,
+			usaDiu, gravidez, usaAnticoncepcional, usaHormonioMenopausa,
+			fezRadioterapia, dataMenstruacao,
+			sangramentoPosRelacao, sangramentoPosMenopausa, numeroProtocolo)
 
-        if err != nil {
-            log.Printf("Erro ao inserir anamnese: %v", err)
-            http.Error(w, "Erro ao registrar anamnese", http.StatusInternalServerError)
-            return
-        }
+		if err != nil {
+			log.Printf("Erro ao inserir anamnese: %v", err)
+			http.Error(w, "Erro ao registrar anamnese", http.StatusInternalServerError)
+			return
+		}
 
-        http.Redirect(w, r, "/sucesso", http.StatusSeeOther)
-    }
+		http.Redirect(w, r, "/sucesso", http.StatusSeeOther)
+	}
 }
 
 // Função para editar anamnese
 // Esta função permite editar uma anamnese existente, recebendo os dados do formulário e atualizando o banco de dados.
 func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
-    if r.Method == http.MethodGet {
-        pacienteID := r.URL.Query().Get("paciente_id")
-        if pacienteID == "" {
-            http.Error(w, "ID do paciente não fornecido", http.StatusBadRequest)
-            return
-        }
+	if r.Method == http.MethodGet {
+		// pacienteID := r.URL.Query().Get("paciente_id")
+		// if pacienteID == "" {
+		// 	http.Error(w, "ID do paciente não fornecido", http.StatusBadRequest)
+		// 	return
+		// }
 
-        id, err := strconv.Atoi(pacienteID)
-        if err != nil {
-            http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
-            return
-        }
-		// Consultar anamneses do paciente
-        rows, err := db.Query(`
-            SELECT a.id, p.nome_completo_mulher, p.cpf, 
-                   a.motivo_exame, a.data_registro, a.numero_protocolo
-            FROM anamnese a
-            JOIN pacientes p ON a.paciente_id = p.id
-            WHERE a.paciente_id = $1
-            ORDER BY a.data_registro DESC`, id)
-        
-        if err != nil {
-            http.Error(w, "Erro ao consultar anamnese", http.StatusInternalServerError)
-            return
-        }
-        defer rows.Close()
+		// id, err := strconv.Atoi(pacienteID)
+		// if err != nil {
+		// 	http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
+		// 	return
+		// }
 
-        var anamneses []anamnese
-        for rows.Next() {
-            var a anamnese
-            err := rows.Scan(
-                &a.ID, &a.NomePaciente, &a.CPF,
-                &a.MotivoExame, &a.DataRegistro, &a.NumeroProtocolo,
-            )
-            if err != nil {
-                http.Error(w, "Erro ao ler anamnese", http.StatusInternalServerError)
-                return
-            }
-            anamneses = append(anamneses, a)
-        }
+		// rows, err := db.Query(`
+		//     SELECT a.id, p.nome_completo_mulher, p.cpf,
+		//            a.motivo_exame, a.data_registro, a.numero_protocolo
+		//     FROM anamnese a
+		//     JOIN pacientes p ON a.paciente_id = p.id
+		//     WHERE a.paciente_id = $1
+		//     ORDER BY a.data_registro DESC`, id)
 
-        data := struct {
-            NomePaciente string
-            CPF          string
-            Anamneses    []anamnese
-        }{
-            NomePaciente: anamneses[0].NomePaciente,
-            CPF:         anamneses[0].CPF,
-            Anamneses:    anamneses,
-        }
+		// if err != nil {
+		// 	http.Error(w, "Erro ao consultar anamnese", http.StatusInternalServerError)
+		// 	return
+		// }
+		// defer rows.Close()
 
-        tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", data)
-    }
+		// var anamneses []dados_anamnese
+		// for rows.Next() {
+		// 	var a dados_anamnese
+		// 	err := rows.Scan(
+		// 		&a.ID, &a.NomePaciente, &a.CPF,
+		// 		&a.MotivoExame, &a.DataRegistro, &a.NumeroProtocolo,
+		// 	)
+		// 	if err != nil {
+		// 		http.Error(w, "Erro ao ler anamnese", http.StatusInternalServerError)
+		// 		return
+		// 	}
+		// 	anamneses = append(anamneses, a)
+		// }
+
+		// data := struct {
+		// 	NomePaciente string
+		// 	CPF          string
+		// 	Anamneses    []dados_anamnese
+		// }{
+		// 	NomePaciente: anamneses[0].NomePaciente,
+		// 	CPF:          anamneses[0].CPF,
+		// 	Anamneses:    anamneses,
+		// }
+
+		tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", nil)
+	}
 }
