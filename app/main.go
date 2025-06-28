@@ -79,9 +79,9 @@ func main() {
 	// Carregar o arquivo .env
 	err := godotenv.Load("./app/.env")
 	tpl, _ = template.ParseGlob("./static/*.html")
-	
+
 	fs := http.FileServer(http.Dir("./static"))
-	
+
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	http.HandleFunc("/", Autenticar(indexHandler))
 	http.HandleFunc("/login", login)
@@ -93,17 +93,16 @@ func main() {
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
 	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
-	http.HandleFunc("/editar_anamnese", Autenticar(editarAnamnese))
-	http.HandleFunc("/excluir_anamnese", Autenticar(excluirAnamnese))
 
 	log.Println("Server rodando na porta 8080")
 
-	err := http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
+	err = http.ListenAndServe(":8080", context.ClearHandler(http.DefaultServeMux))
 	if err != nil {
 		panic(err)
 	}
 
 }
+
 // Função Autenticar
 // Esta função é um middleware que verifica se o usuário está autenticado antes de permitir o acesso.
 func Autenticar(HandlerFunc http.HandlerFunc) http.HandlerFunc {
@@ -234,6 +233,7 @@ func conexaoBanco() *sql.DB {
 	return database
 
 }
+
 // Função para cadastrar um usuário
 // Esta função é responsável por lidar com o cadastro de novos usuários na clínica
 // Ela verifica se o método da requisição é GET ou POST, processa os dados do formulário
@@ -271,12 +271,12 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Erro ao verificar existência do usuário", http.StatusInternalServerError)
 			return
 		}
-		
+
 		// insere a senha hasheado no banco de dados
 		senha_hasheada, _ := hashearSenha(senha)
 
 		// Inserir os dados do usuário no banco de dados
-		// A consulta SQL insere os dados do usuário na tabela usuarios_clinica	
+		// A consulta SQL insere os dados do usuário na tabela usuarios_clinica
 
 		_, err = db.Exec("INSERT INTO usuarios_clinica (CPF, email, nome_completo, cns, cnes, senha) VALUES ($1, $2, $3, $4, $5, $6)", CPF, email, nome_completo, CNS, CNES, senha_hasheada)
 		if err != nil {
@@ -301,6 +301,7 @@ func checarSenhaHash(senha, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(senha))
 	return err == nil
 }
+
 // Funções de login e logout
 // Essas funções lidam com o processo de autenticação do usuário, verificando as credenciais.
 
@@ -347,6 +348,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	sessao.Save(r, w)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
+
 // Funções para cadastro de pacientes e registro de exames clínicos
 // Essas funções lidam com o cadastro de novos pacientes e o registro de exames clínicos.
 func cadastrar_paciente(w http.ResponseWriter, r *http.Request) {
@@ -545,45 +547,42 @@ func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
 // Função para registrar anamnese
 // Esta função lida com o registro de anamneses, recebendo os dados do formulário
 func anamnese(w http.ResponseWriter, r *http.Request) {
-    if r.Method == http.MethodGet {
-        tpl.ExecuteTemplate(w, "anamnese.html", nil)
-        return
-    } else if r.Method == http.MethodPost {
-	    
-        numeroProtocolo := fmt.Sprintf("%d", time.Now().Unix())
-        pacienteID := r.FormValue("paciente_id") 
-        motivoExame := r.FormValue("radioQ1")
-        fezPreventivo := r.FormValue("radioQ2")
-        detalhesPreventivo := r.FormValue("outro-input")
-        usaDiu := r.FormValue("radioQ3")
-        gravidez := r.FormValue("radioQ4")
-        usaAnticoncepcional := r.FormValue("radioQ5")
-        usaHormonioMenopausa := r.FormValue("radioQ6")
-        fezRadioterapia := r.FormValue("radioQ7")
-        dataUltimaMenstruacao := r.FormValue("date-input")
-        sangramentoPosRelacao := r.FormValue("radioQ8")
-        sangramentoPosMenopausa := r.FormValue("radioQ9")
+	if r.Method == http.MethodGet {
+		tpl.ExecuteTemplate(w, "anamnese.html", nil)
+		return
+	} else if r.Method == http.MethodPost {
 
-       
-        pacienteIDInt, err := strconv.Atoi(pacienteID)
-        if err != nil {
-            http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
-            return
-        }
+		numeroProtocolo := fmt.Sprintf("%d", time.Now().Unix())
+		pacienteID := r.FormValue("paciente_id")
+		motivoExame := r.FormValue("radioQ1")
+		fezPreventivo := r.FormValue("radioQ2")
+		detalhesPreventivo := r.FormValue("outro-input")
+		usaDiu := r.FormValue("radioQ3")
+		gravidez := r.FormValue("radioQ4")
+		usaAnticoncepcional := r.FormValue("radioQ5")
+		usaHormonioMenopausa := r.FormValue("radioQ6")
+		fezRadioterapia := r.FormValue("radioQ7")
+		dataUltimaMenstruacao := r.FormValue("date-input")
+		sangramentoPosRelacao := r.FormValue("radioQ8")
+		sangramentoPosMenopausa := r.FormValue("radioQ9")
 
-       
-        var dataMenstruacao sql.NullTime
-        if dataUltimaMenstruacao != "" {
-            parsedDate, err := time.Parse("2006-01-02", dataUltimaMenstruacao)
-            if err != nil {
-                http.Error(w, "Formato de data inválido", http.StatusBadRequest)
-                return
-            }
-            dataMenstruacao = sql.NullTime{Time: parsedDate, Valid: true}
-        }
+		pacienteIDInt, err := strconv.Atoi(pacienteID)
+		if err != nil {
+			http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
+			return
+		}
 
-       
-        _, err = db.Exec(`INSERT INTO anamnese (
+		var dataMenstruacao sql.NullTime
+		if dataUltimaMenstruacao != "" {
+			parsedDate, err := time.Parse("2006-01-02", dataUltimaMenstruacao)
+			if err != nil {
+				http.Error(w, "Formato de data inválido", http.StatusBadRequest)
+				return
+			}
+			dataMenstruacao = sql.NullTime{Time: parsedDate, Valid: true}
+		}
+
+		_, err = db.Exec(`INSERT INTO anamnese (
             paciente_id, motivo_exame, fez_preventivo, detalhes_preventivo, 
             usa_diu, gravidez, usa_anticoncepcional, usa_hormonio_menopausa, 
             fez_radioterapia, data_ultima_menstruacao, 
