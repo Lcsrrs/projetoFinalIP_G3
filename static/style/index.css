@@ -187,6 +187,28 @@ button{
 button:hover{
     background-color: rgb(67, 194, 109);
 }
+
+.buttonSecundary,
+.buttonSecundary:link,
+.buttonSecundary:visited {
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none; /* tira sublinhado */
+    background-color: white;
+    color: #000;
+    transition: background-color 0.3s ease;
+}
+
+.buttonSecundary:hover {
+    background-color: rgb(67, 194, 109);
+}
+
 .rodape{
     background-color: rgb(201, 239, 220) ;
     height: 8rem;
