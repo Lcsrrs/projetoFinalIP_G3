@@ -79,7 +79,6 @@ http://localhost:8080/cadastro_usuario
 ```
 
 e realizar o cadastro de um usuário para ser utilizado na página de login
-```
 
 ---
 
