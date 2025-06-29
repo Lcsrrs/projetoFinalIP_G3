@@ -78,6 +78,9 @@ func main() {
 
 	// Carregar o arquivo .env
 	err := godotenv.Load("./app/.env")
+	if err != nil {
+		panic(err)
+	}
 	tpl, _ = template.ParseGlob("./static/*.html")
 
 	fs := http.FileServer(http.Dir("./static"))
@@ -93,6 +96,7 @@ func main() {
 	http.HandleFunc("/sucesso", Autenticar(paginaSucesso))
 	http.HandleFunc("/anamnese", Autenticar(anamnese))
 	http.HandleFunc("/consultar_atendimento_previo", Autenticar(consultarAnamnese))
+	http.HandleFunc("/agendar_exame", Autenticar(agendar_exame))
 
 	log.Println("Server rodando na porta 8080")
 
@@ -207,8 +211,17 @@ func conexaoBanco() *sql.DB {
 	if err != nil {
 		log.Fatalf("Erro ao criar tabela exame_clinico")
 	}
-	//cria a tabela anamnese
 
+	//cria a tabela consultas clínica
+	_, err = database.Query(`CREATE TABLE IF NOT EXISTS consultas (
+		CPF VARCHAR(15),
+		data_exame DATE
+	)`)
+	if err != nil {
+		log.Fatalf("Erro ao criar tabela consultas")
+	}
+
+	//cria a tabela anamnese
 	_, err = database.Query(`CREATE TABLE IF NOT EXISTS anamnese (
     id SERIAL PRIMARY KEY,
         paciente_id INTEGER REFERENCES pacientes(id),
@@ -281,7 +294,7 @@ func cadastro_usuario(w http.ResponseWriter, r *http.Request) {
 		_, err = db.Exec("INSERT INTO usuarios_clinica (CPF, email, nome_completo, cns, cnes, senha) VALUES ($1, $2, $3, $4, $5, $6)", CPF, email, nome_completo, CNS, CNES, senha_hasheada)
 		if err != nil {
 			http.Error(w, "Erro na inserção dos dados no banco de dados", http.StatusInternalServerError)
-			fmt.Println("Erro: %v", err)
+			fmt.Println("Erro: ", err)
 			return
 		}
 
@@ -485,6 +498,11 @@ func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 	} else if r.Method == http.MethodPost {
 		resultado_busca = nil
 		buscar := r.FormValue("campo_buscar")
+		if buscar == "" {
+			fmt.Println("Não pesquisar com campo vazio")
+			http.Redirect(w, r, "/consultar_paciente", http.StatusSeeOther) // Impedir buscas com campo vazio
+			return
+		}
 
 		resultado, err := db.Query("SELECT id, cartao_sus, nome_completo_mulher, nome_completo_mae, apelido_mulher, cpf, nacionalidade, data_nascimento, idade, raca_cor, raca_cor_outro, escolaridade, ddd, telefone, logradouro, complemento, uf, municipio, cep, numero_residencia, bairro, codigo_municipio, ponto_referencia FROM pacientes WHERE cpf = $1 OR cartao_sus = $1 OR nome_completo_mulher ILIKE '%' || $1 || '%'", buscar)
 		if err != nil {
@@ -495,8 +513,9 @@ func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 
 		defer resultado.Close()
 
+		var busca_paciente paciente
+
 		for resultado.Next() {
-			var busca_paciente paciente
 
 			err := resultado.Scan(
 				&busca_paciente.Id,
@@ -533,14 +552,6 @@ func consultar_paciente(w http.ResponseWriter, r *http.Request) {
 		}
 
 		http.Redirect(w, r, "/consultar_paciente", http.StatusSeeOther) // Redirecionar após o sucesso
-
-	}
-}
-
-func consultar_atendimento_previo(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", nil)
-		return
 	}
 }
 
@@ -556,15 +567,15 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
 		pacienteID := r.FormValue("paciente_id")
 		motivoExame := r.FormValue("radioQ1")
 		fezPreventivo := r.FormValue("radioQ2")
-		detalhesPreventivo := r.FormValue("outro-input")
+		detalhesPreventivo := r.FormValue("detalhe_papanicolau")
 		usaDiu := r.FormValue("radioQ3")
 		gravidez := r.FormValue("radioQ4")
 		usaAnticoncepcional := r.FormValue("radioQ5")
 		usaHormonioMenopausa := r.FormValue("radioQ6")
 		fezRadioterapia := r.FormValue("radioQ7")
-		dataUltimaMenstruacao := r.FormValue("date-input")
-		sangramentoPosRelacao := r.FormValue("radioQ8")
-		sangramentoPosMenopausa := r.FormValue("radioQ9")
+		dataUltimaMenstruacao := r.FormValue("ultima_menstruacao")
+		sangramentoPosRelacao := r.FormValue("radioQ9")
+		sangramentoPosMenopausa := r.FormValue("radioQ10")
 
 		pacienteIDInt, err := strconv.Atoi(pacienteID)
 		if err != nil {
@@ -603,60 +614,95 @@ func anamnese(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Função para editar anamnese
-// Esta função permite editar uma anamnese existente, recebendo os dados do formulário e atualizando o banco de dados.
+// Função para consultar anamnese
+// Esta função permite consultar uma anamnese existente, recebendo os dados do formulário e atualizando o banco de dados.
 func consultarAnamnese(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
-		// pacienteID := r.URL.Query().Get("paciente_id")
-		// if pacienteID == "" {
-		// 	http.Error(w, "ID do paciente não fornecido", http.StatusBadRequest)
-		// 	return
-		// }
+	if r.Method == http.MethodPost {
+		id_paciente := r.FormValue("paciente_id")
+		if id_paciente == "" {
+			http.Error(w, "ID do paciente não fornecido", http.StatusBadRequest)
+			return
+		}
 
-		// id, err := strconv.Atoi(pacienteID)
-		// if err != nil {
-		// 	http.Error(w, "ID do paciente inválido", http.StatusBadRequest)
-		// 	return
-		// }
+		rows, err := db.Query(`
+		    SELECT a.id, p.nome_completo_mulher, p.cpf,
+		    	a.motivo_exame, a.data_registro, a.numero_protocolo
+		    FROM anamnese a
+		    JOIN pacientes p ON a.paciente_id = p.id
+		    WHERE a.paciente_id = $1
+		    ORDER BY a.data_registro DESC`, id_paciente)
 
-		// rows, err := db.Query(`
-		//     SELECT a.id, p.nome_completo_mulher, p.cpf,
-		//            a.motivo_exame, a.data_registro, a.numero_protocolo
-		//     FROM anamnese a
-		//     JOIN pacientes p ON a.paciente_id = p.id
-		//     WHERE a.paciente_id = $1
-		//     ORDER BY a.data_registro DESC`, id)
+		if err != nil {
+			http.Error(w, "Erro ao consultar anamnese", http.StatusInternalServerError)
+			return
+		}
+		defer rows.Close()
 
-		// if err != nil {
-		// 	http.Error(w, "Erro ao consultar anamnese", http.StatusInternalServerError)
-		// 	return
-		// }
-		// defer rows.Close()
+		var anamneses []dados_anamnese
+		var resultados_busca_anamnese dados_anamnese
 
-		// var anamneses []dados_anamnese
-		// for rows.Next() {
-		// 	var a dados_anamnese
-		// 	err := rows.Scan(
-		// 		&a.ID, &a.NomePaciente, &a.CPF,
-		// 		&a.MotivoExame, &a.DataRegistro, &a.NumeroProtocolo,
-		// 	)
-		// 	if err != nil {
-		// 		http.Error(w, "Erro ao ler anamnese", http.StatusInternalServerError)
-		// 		return
-		// 	}
-		// 	anamneses = append(anamneses, a)
-		// }
+		for rows.Next() {
+			err := rows.Scan(
+				&resultados_busca_anamnese.ID, &resultados_busca_anamnese.NomePaciente, &resultados_busca_anamnese.CPF,
+				&resultados_busca_anamnese.MotivoExame, &resultados_busca_anamnese.DataRegistro, &resultados_busca_anamnese.NumeroProtocolo,
+			)
+			if err != nil {
+				http.Error(w, "Erro ao ler anamnese", http.StatusInternalServerError)
+				return
+			}
+			anamneses = append(anamneses, resultados_busca_anamnese)
+		}
 
-		// data := struct {
-		// 	NomePaciente string
-		// 	CPF          string
-		// 	Anamneses    []dados_anamnese
-		// }{
-		// 	NomePaciente: anamneses[0].NomePaciente,
-		// 	CPF:          anamneses[0].CPF,
-		// 	Anamneses:    anamneses,
-		// }
+		type dados_paciente struct {
+			Nome_paciente string
+			CPF           string
+			Anamneses     []dados_anamnese
+		}
 
-		tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", nil)
+		var data dados_paciente
+
+		if len(anamneses) == 0 {
+			err := db.QueryRow("SELECT nome_completo_mulher FROM pacientes WHERE id = $1", id_paciente).Scan(&data.Nome_paciente)
+			if err != nil {
+				fmt.Println("Erro ao encontrar nome da mulher , erro: ", err)
+				return
+			}
+
+			err = db.QueryRow("SELECT cpf FROM pacientes WHERE id = $1", id_paciente).Scan(&data.CPF)
+			if err != nil {
+				fmt.Println("Erro ao encontrar cpf da mulher , erro: ", err)
+				return
+			}
+		} else {
+			data.Nome_paciente = anamneses[0].NomePaciente
+			data.CPF = anamneses[0].CPF
+			data.Anamneses = anamneses
+		}
+
+		err = tpl.ExecuteTemplate(w, "consultar_atendimento_previo.html", data)
+		if err != nil {
+			http.Error(w, "Erro ao renderizar template", http.StatusInternalServerError)
+		}
 	}
+}
+
+func agendar_exame(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		tpl.ExecuteTemplate(w, "agendar_exame.html", nil)
+		return
+	} else if r.Method == http.MethodPost {
+		cpf_consulta := r.FormValue("CPF")
+		data_consulta := r.FormValue("data_exame")
+
+		_, err := db.Exec("INSERT INTO consultas (CPF, data_exame) VALUES ($1, $2)", cpf_consulta, data_consulta)
+		if err != nil {
+			http.Error(w, "Erro na inserção dos dados no banco de dados", http.StatusInternalServerError)
+			fmt.Println("Erro: ", err)
+			return
+		} else {
+			fmt.Println("Dados inseridos no banco com sucesso")
+		}
+	}
+
+	http.Redirect(w, r, "/sucesso", http.StatusSeeOther)
 }

@@ -54,23 +54,23 @@
 
     <main>
         <h2 class="pageTitle">Anamnese</h2>
-        <form>
+        <form method="POST">
             <div class="question">
                 <h5>1. Motivo do exame*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ1" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ1" id="radioDefault1" value="Rastreamento">
                     <label class="form-check-label" for="radioQ1">
                         Rastreamento
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ1" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ1" id="radioDefault1" value="Repetição (exame alterado ASCUS/Baixo Grau)">
                     <label class="form-check-label" for="radioQ1">
                         Repetição (exame alterado ASCUS/Baixo Grau)
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ1" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ1" id="radioDefault1" value="Seguimento (pós diagnóstico colposcópico / tratamento)">
                     <label class="form-check-label" for="radioQ1">
                         Seguimento (pós diagnóstico colposcópico / tratamento)
                     </label>
@@ -80,20 +80,20 @@
             <div class="question">
                 <h5>2. Fez o exame preventivo (Papanicolau) alguma vez?*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ2" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ2" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ2">
                         Sim
                     </label>
-                    <input type="text" class="form-control outro-input" placeholder="Por favor, especifique">
+                    <input type="text" class="form-control outro-input" placeholder="Por favor, especifique" name="detalhe_papanicolau">
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ2" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ2" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ2">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ2" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ2" id="radioDefault1" value="Não Sabe">
                     <label class="form-check-label" for="radioQ2">
                         Não Sabe
                     </label>
@@ -103,19 +103,19 @@
             <div class="question">
                 <h5>3. Usa DIU?*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ3" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ3" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ3">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ3" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ3" id="radioDefault1" value="Não">
                     <label class="form-check-label" for="radioQ3">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ3" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ3" id="radioDefault1" value="Não Sabe">
                     <label class="form-check-label" for="radioQ3">
                         Não Sabe
                     </label>
@@ -126,19 +126,19 @@
             <div class="question">
                 <h5>4. Está grávida?*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ4" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ4" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ4">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ4" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ4" id="radioDefault1" value="Não">
                     <label class="form-check-label" for="radioQ4">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ4" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ4" id="radioDefault1" value="Não Sabe">
                     <label class="form-check-label" for="radioQ4">
                         Não Sabe
                     </label>
@@ -149,19 +149,19 @@
             <div class="question">
                 <h5>5. Usa pílula anticoncepcional?*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ5" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ5" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ5">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ5" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ5" id="radioDefault1" value="Não">
                     <label class="form-check-label" for="radioQ5">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ5" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ5" id="radioDefault1" value="Não Sabe">
                     <label class="form-check-label" for="radioQ5">
                         Não Sabe
                     </label>
@@ -172,19 +172,19 @@
             <div class="question">
                 <h5>6. Usa hormônio / remédio para tratar menopausa?*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ6" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ6" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ6">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ6" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ6" id="radioDefault1" value="Não">
                     <label class="form-check-label" for="radioQ6">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ6" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ6" id="radioDefault1" value="Não Sabe">
                     <label class="form-check-label" for="radioQ6">
                         Não Sabe
                     </label>
@@ -195,19 +195,19 @@
             <div class="question">
                 <h5>7. Já fez tratamento por radioterapia?*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ7" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ7" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ7">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ7" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ7" id="radioDefault1" value="Não">
                     <label class="form-check-label" for="radioQ7">
                         Não
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ7" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ7" id="radioDefault1" value="Não Sabe">
                     <label class="form-check-label" for="radioQ7">
                         Não Sabe
                     </label>
@@ -217,7 +217,7 @@
             
             <div class="question">
                 <h5>8. Data da última menstruação?*</h5>
-                    <input type="date" class="date-input">
+                    <input type="date" class="date-input" name="ultima_menstruacao">
                     <br>
                 
             </div>
@@ -226,13 +226,13 @@
             <div class="question">
                 <h5>9. Tem ou teve algum sangramento após relações sexuais? (não considerar a primeira relação sexual na vida)*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ9" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ9" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ9">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ9" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ9" id="radioDefault1" value="Não / Não sabe / Não lembra">
                     <label class="form-check-label" for="radioQ10">
                         Não / Não sabe / Não lembra
                     </label>
@@ -243,13 +243,13 @@
             <div class="question">
                 <h5>10. Tem ou teve algum sangramento após a menopausa? (não considerar o(s) sangramento(s) na vigência de reposição hormonal)*</h5>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ10" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ10" id="radioDefault1" value="Sim">
                     <label class="form-check-label" for="radioQ7">
                         Sim
                     </label>
                     </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="radioQ10" id="radioDefault1">
+                    <input class="form-check-input" type="radio" name="radioQ10" id="radioDefault1" value="Não / Não sabe / Não lembra">
                     <label class="form-check-label" for="radioQ7">
                         Não / Não sabe / Não lembra
                     </label>
