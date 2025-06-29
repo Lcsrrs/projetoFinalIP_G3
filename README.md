@@ -103,6 +103,8 @@ Ao rodar o projeto pela primeira vez, ele cria automaticamente as tabelas necess
 - `usuarios_clinica` → Cadastro e autenticação de usuários.
 - `pacientes` → Dados das pacientes.
 - `exame_clinico` → Registro dos exames clínicos.
+- `consultas` → Registro das consultas a serem feitas
+- `anamnese` → Registro das anamneses realizadas
 
 ---
 
