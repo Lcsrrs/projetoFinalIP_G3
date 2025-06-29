@@ -114,7 +114,7 @@ body{
     font-family: Arial, sans-serif;
 }
 
-form{
+form:not(.form_button){
     width: 90%;
     margin: 30px auto;
     padding: 30px 7% 30px;
@@ -203,4 +203,9 @@ button:hover{
     display: block;
     margin: auto;
     width: auto;
+}
+
+.exame {
+    display: flex;
+    justify-content: center;
 }
