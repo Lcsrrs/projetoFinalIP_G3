@@ -5,6 +5,8 @@ Este projeto foi desenvolvido como trabalho final da disciplina de **Introduçã
 
 O objetivo do sistema é **digitalizar a ficha de exame citopatológico**, utilizada no processo de cadastro, anamnese e exame clínico de mulheres que estão no processo de **rastreamento, diagnóstico e acompanhamento do câncer de colo de útero**.
 
+[Vídeo de apresentação no Youtube](https://youtu.be/XDpY7Qgdevo)
+
 ---
 
 ## ⚙️ Tecnologias Utilizadas
